@@ -1,0 +1,31 @@
+{
+  "defaults": {
+    "tags": {
+      "product": "policy-collection"
+    },
+    "lifecycle": "blocking",
+    "timeout": "10m"
+  },
+  "tests": [
+    {
+      "name": "[sig-policy-collection] example test should pass",
+      "script": "scripts/example-pass.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-policy-collection] example test should skip when not applicable",
+      "script": "scripts/example-skip.sh"
+    }
+  ],
+  "suites": [
+    {
+      "name": "policy-collection/all",
+      "description": "All policy-collection tests"
+    },
+    {
+      "name": "policy-collection/smoke",
+      "description": "Smoke tests for policy-collection",
+      "qualifiers": ["labels.exists(l, l==\"SMOKE\")"]
+    }
+  ]
+}

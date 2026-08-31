@@ -13,6 +13,7 @@ import (
 
 	// If using ginkgo, import your tests here
 	_ "github.com/openshift-eng/openshift-tests-extension/test/example"
+	_ "github.com/openshift-eng/openshift-tests-extension/test/quay"
 )
 
 func main() {
@@ -27,6 +28,13 @@ func main() {
 	ext.AddSuite(
 		e.Suite{
 			Name:    "example/tests",
+			Parents: []string{"openshift/conformance/parallel"},
+		})
+
+	// Add Quay test suite
+	ext.AddSuite(
+		e.Suite{
+			Name:    "quay/tests",
 			Parents: []string{"openshift/conformance/parallel"},
 		})
 

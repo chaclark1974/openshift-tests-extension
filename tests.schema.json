@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OTE Shell Test Manifest",
+  "description": "Defines shell-based tests for OpenShift Tests Extension (OTE)",
+  "type": "object",
+  "properties": {
+    "defaults": {
+      "type": "object",
+      "description": "Default values applied to all tests unless overridden",
+      "properties": {
+        "labels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Labels applied to every test (e.g., SMOKE, SLOW)"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Key-value tags applied to every test"
+        },
+        "lifecycle": {
+          "type": "string",
+          "enum": ["blocking", "informing"],
+          "description": "Default lifecycle: blocking (failures are fatal) or informing (failures are logged)"
+        },
+        "timeout": {
+          "type": "string",
+          "description": "Default timeout as a Go duration (e.g., 5m, 30s, 1h)",
+          "pattern": "^[0-9]+(ns|us|ms|s|m|h)+$"
+        },
+        "env": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Environment variables injected into every test (per-test overrides on collision)"
+        },
+        "cluster_profile": {
+          "type": "string",
+          "description": "Default cluster profile for step registry integration (e.g., aws, gcp, azure)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "tests": {
+      "type": "array",
+      "description": "List of shell test declarations",
+      "items": {
+        "type": "object",
+        "required": ["name", "script"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full OTE test name. Convention: [sig-xxx] descriptive name",
+            "pattern": "^\\[.+\\].+"
+          },
+          "script": {
+            "type": "string",
+            "description": "Path to the shell script, relative to the manifest file"
+          },
+          "labels": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Labels for this test (merged with defaults)"
+          },
+          "tags": {
+            "type": "object",
+            "additionalProperties": { "type": "string" },
+            "description": "Key-value tags (merged with defaults, per-test overrides)"
+          },
+          "lifecycle": {
+            "type": "string",
+            "enum": ["blocking", "informing"],
+            "description": "Override the default lifecycle for this test"
+          },
+          "timeout": {
+            "type": "string",
+            "description": "Override the default timeout for this test",
+            "pattern": "^[0-9]+(ns|us|ms|s|m|h)+$"
+          },
+          "include": {
+            "type": "string",
+            "description": "CEL expression — test only runs when this evaluates to true against the cluster environment"
+          },
+          "exclude": {
+            "type": "string",
+            "description": "CEL expression — test is skipped when this evaluates to true against the cluster environment"
+          },
+          "env": {
+            "type": "object",
+            "additionalProperties": { "type": "string" },
+            "description": "Environment variables injected into this test (merged with defaults, per-test wins)"
+          },
+          "from_image": {
+            "type": "string",
+            "description": "Container image to pull test dependencies from (step registry metadata)"
+          },
+          "credentials": {
+            "type": "array",
+            "description": "Credential mounts required by this test (step registry metadata)",
+            "items": {
+              "type": "object",
+              "required": ["namespace", "name", "mount_path"],
+              "properties": {
+                "namespace": { "type": "string", "description": "Credential namespace" },
+                "name": { "type": "string", "description": "Credential name" },
+                "mount_path": { "type": "string", "description": "Mount path in the test container" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "cluster_profile": {
+            "type": "string",
+            "description": "Cluster profile for step registry integration (e.g., aws, gcp, azure)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "suites": {
+      "type": "array",
+      "description": "Suite definitions (optional — defaults are generated if omitted)",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Suite name (e.g., product/smoke)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable suite description"
+          },
+          "qualifiers": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "CEL expressions OR'd together for test selection"
+          },
+          "parents": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Parent suites this suite participates in"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["tests"],
+  "additionalProperties": false
+}

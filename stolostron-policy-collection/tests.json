@@ -1,0 +1,107 @@
+{
+  "defaults": {
+    "tags": {
+      "product": "policy-collection",
+      "framework": "acm"
+    },
+    "lifecycle": "blocking",
+    "timeout": "10m",
+    "env": {
+      "POLICY_COLLECTION_DIR": ""
+    }
+  },
+  "tests": [
+    {
+      "name": "[sig-policy] ACM hub is installed and MultiClusterHub is running",
+      "script": "scripts/check-acm-hub.sh",
+      "labels": ["SMOKE"],
+      "tags": { "tier": "0", "category": "prerequisite" }
+    },
+    {
+      "name": "[sig-policy] governance policy CRDs are registered on the hub",
+      "script": "scripts/check-policy-crds.sh",
+      "labels": ["SMOKE"],
+      "tags": { "tier": "0", "category": "prerequisite" }
+    },
+    {
+      "name": "[sig-policy] governance policy controllers are running",
+      "script": "scripts/check-governance-controller.sh",
+      "labels": ["SMOKE"],
+      "tags": { "tier": "0", "category": "prerequisite" }
+    },
+    {
+      "name": "[sig-policy] stable policy YAML files are syntactically valid",
+      "script": "scripts/validate-stable-policy-yamls.sh",
+      "labels": ["SMOKE"],
+      "tags": { "tier": "1", "category": "validation" }
+    },
+    {
+      "name": "[sig-policy] AC-Access-Control policies are present and well-formed",
+      "script": "scripts/validate-ac-access-control.sh",
+      "labels": ["SMOKE", "NIST-800-53"],
+      "tags": { "tier": "1", "category": "AC", "nist-control": "AC-Access-Control" }
+    },
+    {
+      "name": "[sig-policy] CM-Configuration-Management policies are present",
+      "script": "scripts/validate-cm-config-management.sh",
+      "labels": ["NIST-800-53"],
+      "tags": { "tier": "1", "category": "CM", "nist-control": "CM-Configuration-Management" }
+    },
+    {
+      "name": "[sig-policy] SC-System-and-Communications-Protection policies are present",
+      "script": "scripts/validate-sc-system-protection.sh",
+      "labels": ["NIST-800-53"],
+      "tags": { "tier": "1", "category": "SC", "nist-control": "SC-System-Protection" }
+    },
+    {
+      "name": "[sig-policy] CA-Security-Assessment compliance operator install policy exists",
+      "script": "scripts/validate-ca-security-assessment.sh",
+      "labels": ["NIST-800-53"],
+      "tags": { "tier": "1", "category": "CA", "nist-control": "CA-Security-Assessment" }
+    },
+    {
+      "name": "[sig-policy] SI-System-and-Information-Integrity vulnerability policy exists",
+      "script": "scripts/validate-si-system-integrity.sh",
+      "labels": ["NIST-800-53"],
+      "tags": { "tier": "1", "category": "SI", "nist-control": "SI-System-Integrity" }
+    },
+    {
+      "name": "[sig-policy] policy propagation status on hub cluster",
+      "script": "scripts/check-policy-propagation.sh",
+      "labels": ["SMOKE"],
+      "tags": { "tier": "2", "category": "propagation" }
+    },
+    {
+      "name": "[sig-policy] PolicyGenerator kustomize examples are present",
+      "script": "scripts/validate-policygenerator-examples.sh",
+      "tags": { "tier": "2", "category": "policygenerator" }
+    },
+    {
+      "name": "[sig-policy] community policy collection is valid",
+      "script": "scripts/validate-community-policies.sh",
+      "tags": { "tier": "2", "category": "community" },
+      "lifecycle": "informing"
+    }
+  ],
+  "suites": [
+    {
+      "name": "policy-collection/all",
+      "description": "All policy-collection tests"
+    },
+    {
+      "name": "policy-collection/smoke",
+      "description": "Smoke tests for policy-collection",
+      "qualifiers": ["labels.exists(l, l==\"SMOKE\")"]
+    },
+    {
+      "name": "policy-collection/nist",
+      "description": "NIST 800-53 control family validation tests",
+      "qualifiers": ["labels.exists(l, l==\"NIST-800-53\")"]
+    },
+    {
+      "name": "policy-collection/prerequisites",
+      "description": "ACM hub prerequisite checks",
+      "qualifiers": ["tags[\"category\"] == \"prerequisite\""]
+    }
+  ]
+}

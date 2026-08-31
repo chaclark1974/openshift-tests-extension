@@ -1,0 +1,9 @@
+ref: cnv-tests-cnv-all
+as: cnv-tests-cnv-all
+from: cnv-tests
+commands: cnv-tests-cnv-all-commands.sh
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+documentation: "Runs the cnv/all suite from cnv-tests"

@@ -2,3 +2,21 @@ junit*.xml
 /framework-tests
 /example-tests
 .claude/*local.json
+
+# Compiled test-extension binaries (build with `make build`)
+/ote-onboard
+/ote-validate-ci
+/fixture-tests
+/integration-tests
+
+# Per-component compiled binaries (each <dir>/<dir> executable)
+/cnv-tests/cnv-tests
+/interop-tests/interop-tests
+/opp-tests/opp-tests
+/quay-tests/quay-tests
+/stolostron-ocp4.22/stolostron-ocp4.22
+/stolostron-policy-collection/stolostron-policy-collection
+/virt-tests/virt-tests
+
+# macOS
+.DS_Store

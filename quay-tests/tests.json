@@ -1,0 +1,39 @@
+{
+  "defaults": {
+    "tags": {
+      "product": "quay"
+    },
+    "lifecycle": "blocking",
+    "timeout": "10m"
+  },
+  "tests": [
+    {
+      "name": "[sig-registry] Quay API should be healthy and responding",
+      "script": "scripts/check-quay-api-health.sh",
+      "labels": ["SMOKE"],
+      "tags": { "tier": "0" }
+    },
+    {
+      "name": "[sig-registry] Quay public test repository should be accessible",
+      "script": "scripts/validate-quay-public-repo.sh",
+      "labels": ["SMOKE"],
+      "tags": { "tier": "0" }
+    },
+    {
+      "name": "[sig-registry] Quay public test repository should return valid metadata",
+      "script": "scripts/check-quay-repo-metadata.sh",
+      "tags": { "tier": "1" }
+    }
+  ],
+  "suites": [
+    {
+      "name": "quay/all",
+      "description": "All quay tests"
+    },
+    {
+      "name": "quay/smoke",
+      "description": "Smoke tests for quay",
+      "qualifiers": ["labels.exists(l, l==\"SMOKE\")"]
+    }
+  ]
+}

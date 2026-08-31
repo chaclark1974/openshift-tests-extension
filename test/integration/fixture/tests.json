@@ -1,0 +1,53 @@
+{
+  "defaults": {
+    "tags": {
+      "product": "fixture"
+    },
+    "lifecycle": "blocking",
+    "timeout": "10m",
+    "env": {
+      "MY_TEST_VAR": "from-manifest"
+    }
+  },
+  "tests": [
+    {
+      "name": "[sig-fixture] pass test",
+      "script": "scripts/pass.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-fixture] fail test",
+      "script": "scripts/fail.sh"
+    },
+    {
+      "name": "[sig-fixture] skip test",
+      "script": "scripts/skip.sh"
+    },
+    {
+      "name": "[sig-fixture] timeout test",
+      "script": "scripts/timeout.sh",
+      "timeout": "3s"
+    },
+    {
+      "name": "[sig-fixture] artifact test",
+      "script": "scripts/artifact.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-fixture] env echo test",
+      "script": "scripts/env-echo.sh",
+      "labels": ["SMOKE"]
+    }
+  ],
+  "suites": [
+    {
+      "name": "fixture/all",
+      "description": "All fixture tests"
+    },
+    {
+      "name": "fixture/smoke",
+      "description": "Smoke fixture tests",
+      "qualifiers": ["labels.exists(l, l==\"SMOKE\")"]
+    }
+  ]
+}

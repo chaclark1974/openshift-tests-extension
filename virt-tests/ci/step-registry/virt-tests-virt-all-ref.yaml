@@ -1,0 +1,9 @@
+ref: virt-tests-virt-all
+as: virt-tests-virt-all
+from: virt-tests
+commands: virt-tests-virt-all-commands.sh
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+documentation: "Runs the virt/all suite from virt-tests"

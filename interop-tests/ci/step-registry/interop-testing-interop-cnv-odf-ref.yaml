@@ -1,0 +1,9 @@
+ref: interop-testing-interop-cnv-odf
+as: interop-testing-interop-cnv-odf
+from: interop-tests
+commands: interop-testing-interop-cnv-odf-commands.sh
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+documentation: Runs the interop/cnv-odf suite from interop-tests

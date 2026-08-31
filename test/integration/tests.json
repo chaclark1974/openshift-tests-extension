@@ -1,0 +1,111 @@
+{
+  "defaults": {
+    "tags": {
+      "product": "integration"
+    },
+    "lifecycle": "blocking",
+    "timeout": "2m"
+  },
+  "tests": [
+    {
+      "name": "[sig-ote] scaffold generates complete project",
+      "script": "scripts/test-scaffold.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-ote] list tests returns correct output",
+      "script": "scripts/test-list-tests.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-ote] list tests filters by suite",
+      "script": "scripts/test-list-suite-filter.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-ote] info shows non-payload component",
+      "script": "scripts/test-info.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-ote] run-test passes on exit 0",
+      "script": "scripts/test-run-pass.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-ote] run-test fails on exit 1",
+      "script": "scripts/test-run-fail.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-ote] run-test skips on exit 2",
+      "script": "scripts/test-run-skip.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-ote] run-suite produces correct results",
+      "script": "scripts/test-run-suite.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-ote] timeout kills test within window",
+      "script": "scripts/test-run-timeout.sh"
+    },
+    {
+      "name": "[sig-ote] manifest env vars injected into test",
+      "script": "scripts/test-env-injection.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-ote] artifact directory created with content",
+      "script": "scripts/test-artifact-dir.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-ote] generate-ci-refs produces step registry files",
+      "script": "scripts/test-generate-ci-refs.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-ote] orchestrator protocol: info returns valid metadata",
+      "script": "scripts/test-orchestrator-info.sh",
+      "labels": ["ORCHESTRATOR"]
+    },
+    {
+      "name": "[sig-ote] orchestrator protocol: list tests with environment flags",
+      "script": "scripts/test-orchestrator-list.sh",
+      "labels": ["ORCHESTRATOR"]
+    },
+    {
+      "name": "[sig-ote] orchestrator protocol: run-test returns JSON result",
+      "script": "scripts/test-orchestrator-run.sh",
+      "labels": ["ORCHESTRATOR"]
+    },
+    {
+      "name": "[sig-ote] orchestrator protocol: suites and components listed",
+      "script": "scripts/test-orchestrator-suites.sh",
+      "labels": ["ORCHESTRATOR"]
+    },
+    {
+      "name": "[sig-ote] orchestrator protocol: multi-binary result aggregation",
+      "script": "scripts/test-orchestrator-aggregation.sh",
+      "labels": ["ORCHESTRATOR"]
+    }
+  ],
+  "suites": [
+    {
+      "name": "integration/all",
+      "description": "All OTE integration tests"
+    },
+    {
+      "name": "integration/smoke",
+      "description": "Smoke integration tests",
+      "qualifiers": ["labels.exists(l, l==\"SMOKE\")"]
+    },
+    {
+      "name": "integration/orchestrator",
+      "description": "Orchestrator protocol integration tests",
+      "qualifiers": ["labels.exists(l, l==\"ORCHESTRATOR\")"]
+    }
+  ]
+}

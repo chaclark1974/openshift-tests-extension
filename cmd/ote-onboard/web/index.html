@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OTE Component Onboarding</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-elev: #161b22;
+    --bg-input: #0d1117;
+    --border: #30363d;
+    --border-focus: #58a6ff;
+    --text: #e6edf3;
+    --text-dim: #8b949e;
+    --accent: #2f81f7;
+    --accent-hover: #4c93ff;
+    --danger: #f85149;
+    --ok: #3fb950;
+    --warn: #d29922;
+    --radius: 8px;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  [data-theme="light"] {
+    --bg: #f6f8fa;
+    --bg-elev: #ffffff;
+    --bg-input: #ffffff;
+    --border: #d0d7de;
+    --border-focus: #0969da;
+    --text: #1f2328;
+    --text-dim: #656d76;
+    --accent: #0969da;
+    --accent-hover: #0860ca;
+    --danger: #cf222e;
+    --ok: #1a7f37;
+    --warn: #9a6700;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 24px; }
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 8px; flex-wrap: wrap;
+  }
+  h1 { font-size: 22px; margin: 0; display: flex; align-items: center; gap: 10px; }
+  h1 .logo {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #a371f7);
+    color: #fff; font-weight: 700; font-size: 15px;
+  }
+  .subtitle { color: var(--text-dim); font-size: 14px; margin: 0 0 24px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .card h2 {
+    font-size: 15px; margin: 0 0 4px; display: flex; align-items: center; gap: 8px;
+    text-transform: uppercase; letter-spacing: .04em; color: var(--text);
+  }
+  .card .hint { color: var(--text-dim); font-size: 13px; margin: 0 0 16px; }
+  .card .step {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; border-radius: 50%; font-size: 12px; font-weight: 700;
+    background: var(--accent); color: #fff;
+  }
+
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  label .req { color: var(--danger); margin-left: 3px; }
+  label .opt { color: var(--text-dim); font-weight: 400; margin-left: 6px; font-size: 12px; }
+  .desc { font-size: 12px; color: var(--text-dim); margin: 4px 0 0; }
+  input[type="text"], select, textarea {
+    width: 100%; padding: 9px 11px; font-size: 14px;
+    background: var(--bg-input); color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px;
+    font-family: var(--sans); transition: border-color .15s, box-shadow .15s;
+  }
+  input[type="text"], textarea { font-family: var(--mono); }
+  input:focus, select:focus, textarea:focus {
+    outline: none; border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--border-focus) 25%, transparent);
+  }
+  input.invalid, textarea.invalid { border-color: var(--danger); }
+  .err { color: var(--danger); font-size: 12px; margin-top: 5px; display: none; }
+  .err.show { display: block; }
+  textarea { resize: vertical; min-height: 64px; }
+
+  .row { display: flex; gap: 12px; }
+  .row .field { flex: 1; }
+
+  .kv-list { display: flex; flex-direction: column; gap: 8px; }
+  .kv-row { display: flex; gap: 8px; align-items: center; }
+  .kv-row input { flex: 1; }
+  .kv-row button, .add-btn {
+    border: 1px solid var(--border); background: var(--bg-input); color: var(--text-dim);
+    border-radius: 6px; cursor: pointer; font-size: 13px; padding: 8px 10px;
+    line-height: 1; transition: background .15s, color .15s, border-color .15s;
+  }
+  .kv-row button:hover { color: var(--danger); border-color: var(--danger); }
+  .add-btn { margin-top: 8px; }
+  .add-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  .preview-tabs { display: flex; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
+  .tab {
+    padding: 7px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+    background: transparent; color: var(--text-dim);
+    border: 1px solid transparent; border-radius: 6px;
+  }
+  .tab.active { color: var(--text); background: var(--bg-input); border-color: var(--border); }
+  .tab:hover:not(.active) { color: var(--text); }
+
+  pre {
+    background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: 6px; padding: 16px; overflow-x: auto;
+    font-family: var(--mono); font-size: 13px; margin: 0; white-space: pre;
+    color: var(--text); max-height: 520px;
+  }
+  .code-block { position: relative; }
+  .copy-btn {
+    position: absolute; top: 10px; right: 10px;
+    background: var(--bg-elev); border: 1px solid var(--border); color: var(--text-dim);
+    border-radius: 6px; padding: 5px 10px; font-size: 12px; cursor: pointer; font-weight: 600;
+  }
+  .copy-btn:hover { color: var(--text); border-color: var(--border-focus); }
+  .copy-btn.copied { color: var(--ok); border-color: var(--ok); }
+
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .btn {
+    padding: 10px 16px; font-size: 14px; font-weight: 600; border-radius: 6px;
+    cursor: pointer; border: 1px solid var(--border); background: var(--bg-input);
+    color: var(--text); transition: background .15s, border-color .15s;
+  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .btn:hover:not(.primary) { border-color: var(--border-focus); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+  .status {
+    margin-top: 14px; font-size: 13px; padding: 10px 12px; border-radius: 6px;
+    display: none; border: 1px solid transparent;
+  }
+  .status.show { display: block; }
+  .status.ok { color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); border-color: color-mix(in srgb, var(--ok) 40%, transparent); }
+  .status.bad { color: var(--danger); background: color-mix(in srgb, var(--danger) 12%, transparent); border-color: color-mix(in srgb, var(--danger) 40%, transparent); }
+
+  .theme-toggle {
+    background: var(--bg-elev); border: 1px solid var(--border); color: var(--text-dim);
+    border-radius: 6px; padding: 7px 12px; cursor: pointer; font-size: 13px; font-weight: 600;
+  }
+  .theme-toggle:hover { color: var(--text); }
+  .sticky { position: sticky; top: 24px; }
+  code.inline { font-family: var(--mono); background: var(--bg-input); padding: 1px 5px; border-radius: 4px; font-size: .92em; border: 1px solid var(--border); }
+  footer { color: var(--text-dim); font-size: 12px; margin-top: 24px; text-align: center; }
+  footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><span class="logo">OTE</span> Component Onboarding</h1>
+    <button class="theme-toggle" id="themeToggle" type="button">☾ Theme</button>
+  </header>
+  <p class="subtitle">
+    Fill in the details for your component and this form generates the scaffold command
+    (<code class="inline">ote-scaffold.sh</code>) and a starter <code class="inline">tests.json</code>
+    for the OpenShift Tests Extension (OTE) framework.
+  </p>
+
+  <div class="grid">
+    <!-- ============ LEFT: FORM ============ -->
+    <form id="onboardForm" novalidate>
+      <div class="card">
+        <h2><span class="step">1</span> Project Identity</h2>
+        <p class="hint">Required inputs used to scaffold the extension project and Go module.</p>
+
+        <div class="field">
+          <label for="component">Project / binary name <span class="req">*</span></label>
+          <select id="component" name="component">
+            <option value="">Select an interop component…</option>
+            <option value="cnv-tests">cnv-tests — CNV</option>
+            <option value="virt-tests">virt-tests — KubeVirt / Virt</option>
+            <option value="opp-tests">opp-tests — OPP / ACM</option>
+            <option value="stolostron-policy-collection">stolostron-policy-collection — Policy Collection</option>
+            <option value="interop-tests">interop-tests — Interop</option>
+            <option value="__custom__">➕ Custom / new component…</option>
+          </select>
+          <input type="text" id="nameCustom" name="nameCustom" placeholder="acme-tests" autocomplete="off" style="display:none; margin-top:8px;" />
+          <p class="desc">Pick an existing interop component to auto-fill its product, org, and CI repo — or choose <strong>Custom</strong> to onboard a new one (lowercase kebab-case).</p>
+          <p class="err" id="err-name"></p>
+        </div>
+
+        <div class="field">
+          <label for="product">Product identifier <span class="req">*</span></label>
+          <input type="text" id="product" name="product" placeholder="acme" autocomplete="off" />
+          <p class="desc">Short product slug. Used in <code class="inline">sig-&lt;product&gt;</code> test names and suite names (e.g. <code class="inline">acme/all</code>).</p>
+          <p class="err" id="err-product"></p>
+        </div>
+
+        <div class="field">
+          <label for="org">Go module org prefix <span class="req">*</span></label>
+          <input type="text" id="org" name="org" value="openshift" placeholder="github.com/acme-corp" autocomplete="off" />
+          <p class="desc">Module path prefix. Final module = <code class="inline">&lt;org&gt;/&lt;name&gt;</code>.</p>
+          <p class="err" id="err-org"></p>
+        </div>
+
+        <div class="field">
+          <label for="kind">Component kind <span class="req">*</span></label>
+          <select id="kind" name="kind">
+            <option value="external">external — outside the OCP payload (default)</option>
+            <option value="layered-product">layered-product — a layered product on OCP</option>
+            <option value="standalone">standalone — self-contained component</option>
+          </select>
+          <p class="desc">Determines how the extension registers with the framework.</p>
+        </div>
+
+        <div class="field">
+          <label for="testsUrl">GitHub URL for tests location <span class="opt">optional</span></label>
+          <input type="text" id="testsUrl" name="testsUrl" placeholder="https://github.com/openshift/acme-tests" autocomplete="off" />
+          <p class="desc">URL of the repository (or subdirectory) where the component's tests live. Auto-filled for known interop components.</p>
+          <p class="err" id="err-testsUrl"></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="step">2</span> CI Integration <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim);font-size:12px;">(optional)</span></h2>
+        <p class="hint">Generate OpenShift CI step-registry refs for your suites.</p>
+
+        <div class="field">
+          <label for="ciOrgRepo">GitHub org/repo <span class="opt">optional</span></label>
+          <input type="text" id="ciOrgRepo" name="ciOrgRepo" placeholder="openshift/acme-tests" autocomplete="off" />
+          <p class="desc">If set, generates <code class="inline">ci/step-registry/</code> refs and command scripts. Leave empty to skip.</p>
+          <p class="err" id="err-ciOrgRepo"></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="step">3</span> Manifest Defaults</h2>
+        <p class="hint">Defaults applied to every test in the generated <code class="inline">tests.json</code>.</p>
+
+        <div class="row">
+          <div class="field">
+            <label for="lifecycle">Lifecycle</label>
+            <select id="lifecycle" name="lifecycle">
+              <option value="blocking">blocking — failures are fatal</option>
+              <option value="informing">informing — failures are logged only</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="timeout">Default timeout</label>
+            <input type="text" id="timeout" name="timeout" value="10m" placeholder="10m" />
+            <p class="err" id="err-timeout"></p>
+          </div>
+        </div>
+        <p class="desc" style="margin-top:-8px;">Timeout is a Go duration: <code class="inline">30s</code>, <code class="inline">5m</code>, <code class="inline">1h</code>.</p>
+
+        <div class="field" style="margin-top:16px;">
+          <label for="clusterProfile">Cluster profile <span class="opt">optional</span></label>
+          <input type="text" id="clusterProfile" name="clusterProfile" placeholder="aws" autocomplete="off" />
+          <p class="desc">Step-registry cluster profile, e.g. <code class="inline">aws</code>, <code class="inline">gcp</code>, <code class="inline">azure</code>.</p>
+        </div>
+
+        <div class="field">
+          <label for="labels">Default labels <span class="opt">optional</span></label>
+          <input type="text" id="labels" name="labels" placeholder="SMOKE, SLOW" autocomplete="off" />
+          <p class="desc">Comma-separated. Applied to every test (e.g. <code class="inline">SMOKE, SLOW</code>).</p>
+        </div>
+
+        <div class="field">
+          <label>Default tags <span class="opt">optional</span></label>
+          <p class="desc" style="margin:0 0 8px;"><code class="inline">product</code> is added automatically. Add more key/value tags below.</p>
+          <div class="kv-list" id="tagsList"></div>
+          <button type="button" class="add-btn" data-add="tags">+ Add tag</button>
+        </div>
+
+        <div class="field">
+          <label>Default environment variables <span class="opt">optional</span></label>
+          <p class="desc" style="margin:0 0 8px;">Injected into every test.</p>
+          <div class="kv-list" id="envList"></div>
+          <button type="button" class="add-btn" data-add="env">+ Add env var</button>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn primary" id="downloadJson">⬇ Download tests.json</button>
+        <button type="button" class="btn" id="downloadScript">⬇ Download onboard.sh</button>
+        <button type="button" class="btn" id="resetForm">Reset</button>
+      </div>
+      <div class="status" id="status"></div>
+    </form>
+
+    <!-- ============ RIGHT: PREVIEW ============ -->
+    <div class="sticky">
+      <div class="card">
+        <h2>Generated Output</h2>
+        <p class="hint">Live preview. Copy the command or download the files.</p>
+        <div class="preview-tabs">
+          <button type="button" class="tab active" data-tab="cmd">Scaffold command</button>
+          <button type="button" class="tab" data-tab="json">tests.json</button>
+          <button type="button" class="tab" data-tab="summary">Summary</button>
+        </div>
+
+        <div class="code-block" data-panel="cmd">
+          <button type="button" class="copy-btn" data-copy="cmd">Copy</button>
+          <pre id="out-cmd"></pre>
+        </div>
+        <div class="code-block" data-panel="json" style="display:none;">
+          <button type="button" class="copy-btn" data-copy="json">Copy</button>
+          <pre id="out-json"></pre>
+        </div>
+        <div class="code-block" data-panel="summary" style="display:none;">
+          <button type="button" class="copy-btn" data-copy="summary">Copy</button>
+          <pre id="out-summary"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    OpenShift Tests Extension · Onboarding form · See
+    <a href="../../ONBOARDING_SHELL_TESTS.md">ONBOARDING_SHELL_TESTS.md</a> for the full guide.
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  // ---- Interop component registry (from cmd/ote-validate-ci/main.go) ----
+  // Selecting a component auto-fills its product, module org prefix, and CI org/repo.
+  var COMPONENTS = {
+    "cnv-tests":                    { product: "cnv",               org: "openshift",  ciOrgRepo: "openshift/cnv-tests" },
+    "virt-tests":                   { product: "virt",              org: "openshift",  ciOrgRepo: "openshift/virt-tests" },
+    "opp-tests":                    { product: "opp",               org: "openshift",  ciOrgRepo: "openshift/opp-tests" },
+    "stolostron-policy-collection": { product: "policy-collection", org: "stolostron", ciOrgRepo: "stolostron/policy-collection" },
+    "interop-tests":                { product: "interop",           org: "RedHatQE",   ciOrgRepo: "RedHatQE/interop-testing" }
+  };
+
+  // ---- Validation rules (mirror ote-scaffold.sh / tests.schema.json) ----
+  var SLUG_RE = /^[a-z][a-z0-9]*([-][a-z0-9]+)*$/;      // name, product
+  var ORG_RE = /^[a-zA-Z0-9][a-zA-Z0-9._\/-]*[a-zA-Z0-9]$/; // module org prefix
+  var CI_RE = /^[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+$/;     // org/repo
+  var GH_URL_RE = /^https:\/\/github\.com\/[A-Za-z0-9._-]+\/[A-Za-z0-9._-]+(\/.*)?$/; // tests repo URL
+  var DURATION_RE = /^[0-9]+(ns|us|ms|s|m|h)+$/;        // Go duration
+
+  var validators = {
+    product: function (v) {
+      if (!v) return "Product identifier is required.";
+      if (!SLUG_RE.test(v)) return "Use lowercase kebab-case, e.g. acme.";
+      return "";
+    },
+    org: function (v) {
+      if (!v) return "Org prefix is required.";
+      if (!ORG_RE.test(v)) return "Invalid module path prefix.";
+      return "";
+    },
+    ciOrgRepo: function (v) {
+      if (!v) return "";
+      if (!CI_RE.test(v)) return "Format must be org/repo, e.g. openshift/acme-tests.";
+      return "";
+    },
+    testsUrl: function (v) {
+      if (!v) return "";
+      if (!GH_URL_RE.test(v)) return "Enter a full GitHub URL, e.g. https://github.com/openshift/acme-tests.";
+      return "";
+    },
+    timeout: function (v) {
+      if (!v) return "";
+      if (!DURATION_RE.test(v)) return "Invalid Go duration (e.g. 30s, 5m, 1h).";
+      return "";
+    }
+  };
+
+  function validateField(id) {
+    var el = $(id);
+    var errEl = $("err-" + id);
+    var fn = validators[id];
+    if (!fn) return true;
+    var msg = fn(el.value.trim());
+    if (msg) {
+      el.classList.add("invalid");
+      if (errEl) { errEl.textContent = msg; errEl.classList.add("show"); }
+      return false;
+    }
+    el.classList.remove("invalid");
+    if (errEl) { errEl.classList.remove("show"); errEl.textContent = ""; }
+    return true;
+  }
+
+  // Name comes from either the component dropdown or the custom text input.
+  function currentName() {
+    var comp = $("component").value;
+    if (comp === "__custom__") return $("nameCustom").value.trim();
+    return comp; // "" for the placeholder, else the binary name
+  }
+
+  function validateName() {
+    var comp = $("component").value;
+    var errEl = $("err-name");
+    var target = comp === "__custom__" ? $("nameCustom") : $("component");
+    var v = currentName();
+    var msg = "";
+    if (!v) {
+      msg = comp === "__custom__" ? "Enter a project name." : "Select a component or choose Custom.";
+    } else if (comp === "__custom__" && !SLUG_RE.test(v)) {
+      msg = "Use lowercase kebab-case, e.g. acme-tests.";
+    }
+    // clear invalid state on both possible targets
+    $("component").classList.remove("invalid");
+    $("nameCustom").classList.remove("invalid");
+    if (msg) {
+      target.classList.add("invalid");
+      errEl.textContent = msg; errEl.classList.add("show");
+      return false;
+    }
+    errEl.classList.remove("show"); errEl.textContent = "";
+    return true;
+  }
+
+  function validateAll() {
+    var ok = validateName();
+    Object.keys(validators).forEach(function (id) {
+      if (!validateField(id)) ok = false;
+    });
+    return ok;
+  }
+
+  // ---- Key/value dynamic rows ----
+  function addKvRow(container, k, v, kPlaceholder, vPlaceholder) {
+    var row = document.createElement("div");
+    row.className = "kv-row";
+    var ki = document.createElement("input");
+    ki.type = "text"; ki.placeholder = kPlaceholder || "KEY"; ki.value = k || ""; ki.className = "kv-key";
+    var vi = document.createElement("input");
+    vi.type = "text"; vi.placeholder = vPlaceholder || "value"; vi.value = v || ""; vi.className = "kv-val";
+    var rm = document.createElement("button");
+    rm.type = "button"; rm.textContent = "✕"; rm.title = "Remove";
+    rm.addEventListener("click", function () { row.remove(); render(); });
+    ki.addEventListener("input", render);
+    vi.addEventListener("input", render);
+    row.appendChild(ki); row.appendChild(vi); row.appendChild(rm);
+    container.appendChild(row);
+  }
+
+  function collectKv(container) {
+    var out = {};
+    container.querySelectorAll(".kv-row").forEach(function (row) {
+      var k = row.querySelector(".kv-key").value.trim();
+      var v = row.querySelector(".kv-val").value.trim();
+      if (k) out[k] = v;
+    });
+    return out;
+  }
+
+  // ---- Gather form values ----
+  function gather() {
+    return {
+      name: currentName(),
+      product: $("product").value.trim(),
+      org: $("org").value.trim(),
+      kind: $("kind").value,
+      testsUrl: $("testsUrl").value.trim(),
+      ciOrgRepo: $("ciOrgRepo").value.trim(),
+      lifecycle: $("lifecycle").value,
+      timeout: $("timeout").value.trim(),
+      clusterProfile: $("clusterProfile").value.trim(),
+      labels: $("labels").value.split(",").map(function (s) { return s.trim(); }).filter(Boolean),
+      tags: collectKv($("tagsList")),
+      env: collectKv($("envList"))
+    };
+  }
+
+  // ---- Generators ----
+  function shellQuote(s) {
+    if (s === "") return "''";
+    if (/^[a-zA-Z0-9._\/-]+$/.test(s)) return s;
+    return "'" + s.replace(/'/g, "'\\''") + "'";
+  }
+
+  function genCommand(d) {
+    var parts = [
+      "bash ote-scaffold.sh",
+      "--name " + shellQuote(d.name || "<name>"),
+      "--product " + shellQuote(d.product || "<product>"),
+      "--org " + shellQuote(d.org || "<org>"),
+      "--kind " + shellQuote(d.kind)
+    ];
+    if (d.ciOrgRepo) parts.push("--ci-org-repo " + shellQuote(d.ciOrgRepo));
+    return parts.join(" \\\n  ");
+  }
+
+  function genScript(d) {
+    var header = [
+      "#!/bin/bash",
+      "# Generated by the OTE onboarding form.",
+      "# Run from the openshift-tests-extension repo root."
+    ];
+    if (d.testsUrl) header.push("# Tests location: " + d.testsUrl);
+    return header.concat([
+      "set -euo pipefail",
+      "",
+      genCommand(d),
+      "",
+      "cd " + shellQuote(d.name || "<name>"),
+      "go mod tidy",
+      "make build",
+      "make validate",
+      ""
+    ]).join("\n");
+  }
+
+  function genManifest(d) {
+    var product = d.product || "product";
+    var tags = { product: product };
+    Object.keys(d.tags).forEach(function (k) { tags[k] = d.tags[k]; });
+
+    var defaults = { tags: tags, lifecycle: d.lifecycle, timeout: d.timeout || "10m" };
+    if (d.labels.length) defaults.labels = d.labels;
+    if (Object.keys(d.env).length) defaults.env = d.env;
+    if (d.clusterProfile) defaults.cluster_profile = d.clusterProfile;
+
+    var manifest = {
+      defaults: defaults,
+      tests: [
+        {
+          name: "[sig-" + product + "] example test should pass",
+          script: "scripts/example-pass.sh",
+          labels: ["SMOKE"]
+        },
+        {
+          name: "[sig-" + product + "] example test should skip when not applicable",
+          script: "scripts/example-skip.sh"
+        }
+      ],
+      suites: [
+        { name: product + "/all", description: "All " + product + " tests" },
+        {
+          name: product + "/smoke",
+          description: "Smoke tests for " + product,
+          qualifiers: ["labels.exists(l, l==\"SMOKE\")"]
+        }
+      ]
+    };
+    return JSON.stringify(manifest, null, 2);
+  }
+
+  function genSummary(d) {
+    var lines = [
+      "Project:        " + (d.name || "—"),
+      "Product:        " + (d.product || "—"),
+      "Go module:      " + ((d.org || "<org>") + "/" + (d.name || "<name>")),
+      "Kind:           " + d.kind,
+      "Tests URL:      " + (d.testsUrl || "(none)"),
+      "CI org/repo:    " + (d.ciOrgRepo || "(none)"),
+      "",
+      "Manifest defaults",
+      "  Lifecycle:    " + d.lifecycle,
+      "  Timeout:      " + (d.timeout || "10m"),
+      "  Cluster prof: " + (d.clusterProfile || "(none)"),
+      "  Labels:       " + (d.labels.length ? d.labels.join(", ") : "(none)"),
+      "  Tags:         " + (function () {
+        var t = ["product=" + (d.product || "?")];
+        Object.keys(d.tags).forEach(function (k) { t.push(k + "=" + d.tags[k]); });
+        return t.join(", ");
+      })(),
+      "  Env:          " + (function () {
+        var e = Object.keys(d.env);
+        return e.length ? e.map(function (k) { return k + "=" + d.env[k]; }).join(", ") : "(none)";
+      })(),
+      "",
+      "Generated suites: " + (d.product || "product") + "/all, " + (d.product || "product") + "/smoke"
+    ];
+    return lines.join("\n");
+  }
+
+  // ---- Render ----
+  var cache = {};
+  function render() {
+    var d = gather();
+    cache.cmd = genScript(d);
+    cache.json = genManifest(d);
+    cache.summary = genSummary(d);
+    $("out-cmd").textContent = cache.cmd;
+    $("out-json").textContent = cache.json;
+    $("out-summary").textContent = cache.summary;
+  }
+
+  // ---- Download helper ----
+  function download(filename, text) {
+    var blob = new Blob([text], { type: "text/plain" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function showStatus(msg, ok) {
+    var s = $("status");
+    s.textContent = msg;
+    s.className = "status show " + (ok ? "ok" : "bad");
+    if (ok) setTimeout(function () { s.className = "status"; }, 4000);
+  }
+
+  // ---- Wire up events ----
+  document.querySelectorAll("#onboardForm input, #onboardForm select").forEach(function (el) {
+    el.addEventListener("input", function () {
+      if (validators[el.id]) validateField(el.id);
+      render();
+    });
+    el.addEventListener("change", render);
+  });
+
+  // Component dropdown: toggle custom input + auto-fill related fields.
+  $("component").addEventListener("change", function () {
+    var comp = $("component").value;
+    var customEl = $("nameCustom");
+    if (comp === "__custom__") {
+      customEl.style.display = "block";
+      customEl.focus();
+    } else {
+      customEl.style.display = "none";
+      customEl.value = "";
+      var meta = COMPONENTS[comp];
+      if (meta) {
+        $("product").value = meta.product;
+        $("org").value = meta.org;
+        $("ciOrgRepo").value = meta.ciOrgRepo;
+        $("testsUrl").value = "https://github.com/" + meta.ciOrgRepo;
+        validateField("product");
+        validateField("org");
+        validateField("ciOrgRepo");
+        validateField("testsUrl");
+      }
+    }
+    validateName();
+    render();
+  });
+  $("nameCustom").addEventListener("input", function () { validateName(); render(); });
+
+  document.querySelectorAll(".add-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var kind = btn.getAttribute("data-add");
+      if (kind === "tags") addKvRow($("tagsList"), "", "", "tag-key", "value");
+      else addKvRow($("envList"), "", "", "ENV_VAR", "value");
+      render();
+    });
+  });
+
+  document.querySelectorAll(".tab").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      document.querySelectorAll(".tab").forEach(function (t) { t.classList.remove("active"); });
+      tab.classList.add("active");
+      var target = tab.getAttribute("data-tab");
+      document.querySelectorAll("[data-panel]").forEach(function (p) {
+        p.style.display = p.getAttribute("data-panel") === target ? "block" : "none";
+      });
+    });
+  });
+
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var key = btn.getAttribute("data-copy");
+      navigator.clipboard.writeText(cache[key] || "").then(function () {
+        var orig = btn.textContent;
+        btn.textContent = "Copied ✓"; btn.classList.add("copied");
+        setTimeout(function () { btn.textContent = orig; btn.classList.remove("copied"); }, 1500);
+      });
+    });
+  });
+
+  $("downloadJson").addEventListener("click", function () {
+    if (!validateAll()) { showStatus("Fix the highlighted fields before downloading.", false); return; }
+    download("tests.json", cache.json);
+    showStatus("Downloaded tests.json — place it in your project root.", true);
+  });
+
+  $("downloadScript").addEventListener("click", function () {
+    if (!validateAll()) { showStatus("Fix the highlighted fields before downloading.", false); return; }
+    download("onboard.sh", cache.cmd);
+    showStatus("Downloaded onboard.sh — run it from the repo root with: bash onboard.sh", true);
+  });
+
+  $("resetForm").addEventListener("click", function () {
+    $("onboardForm").reset();
+    $("nameCustom").style.display = "none";
+    $("tagsList").innerHTML = "";
+    $("envList").innerHTML = "";
+    document.querySelectorAll(".invalid").forEach(function (e) { e.classList.remove("invalid"); });
+    document.querySelectorAll(".err.show").forEach(function (e) { e.classList.remove("show"); });
+    $("status").className = "status";
+    render();
+  });
+
+  // ---- Theme ----
+  $("themeToggle").addEventListener("click", function () {
+    var html = document.documentElement;
+    html.setAttribute("data-theme", html.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  });
+
+  // ---- Init ----
+  render();
+})();
+</script>
+</body>
+</html>

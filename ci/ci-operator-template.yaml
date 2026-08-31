@@ -1,0 +1,66 @@
+# ci-operator configuration template for OTE shell test projects
+#
+# Replace placeholders:
+#   ORG_NAME     — GitHub organization (e.g., openshift)
+#   REPO_NAME    — GitHub repository (e.g., cnv-tests)
+#   PRODUCT_NAME — OTE product name (e.g., cnv)
+#   BINARY_NAME  — OTE binary name (e.g., cnv-tests)
+#   BRANCH       — Target branch (e.g., main)
+#
+# Place this file at:
+#   openshift/release/ci-operator/config/ORG_NAME/REPO_NAME/ORG_NAME-REPO_NAME-BRANCH.yaml
+
+build_root:
+  project_image:
+    dockerfile_literal: |
+      FROM registry.ci.openshift.org/ocp/builder:rhel-9-golang-1.22-openshift-4.18
+      RUN dnf install -y jq && dnf clean all
+
+images:
+  - dockerfile_literal: |
+      FROM src
+      RUN make build
+    from: src
+    to: BINARY_NAME
+
+tests:
+  - as: unit
+    commands: make unit
+    container:
+      from: src
+
+  - as: validate
+    commands: make ote-validate
+    container:
+      from: src
+
+  - as: lint
+    commands: make ote-lint
+    container:
+      from: src
+
+  - as: e2e
+    steps:
+      cluster_profile: aws
+      test:
+        - as: run-tests
+          cli: latest
+          commands: |
+            set -euxo pipefail
+            shopt -s inherit_errexit 2>/dev/null || true
+            export EXTENSION_ARTIFACTS_DIR="${ARTIFACT_DIR}"
+            make ote-test
+          from: BINARY_NAME
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+      workflow: ipi-aws
+
+resources:
+  '*':
+    limits:
+      memory: 4Gi
+    requests:
+      cpu: 100m
+      memory: 200Mi

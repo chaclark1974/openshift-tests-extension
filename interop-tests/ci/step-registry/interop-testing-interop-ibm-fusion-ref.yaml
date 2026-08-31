@@ -1,0 +1,9 @@
+ref: interop-testing-interop-ibm-fusion
+as: interop-testing-interop-ibm-fusion
+from: interop-tests
+commands: interop-testing-interop-ibm-fusion-commands.sh
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+documentation: Runs the interop/ibm-fusion suite from interop-tests

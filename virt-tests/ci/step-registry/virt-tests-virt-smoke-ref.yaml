@@ -1,0 +1,9 @@
+ref: virt-tests-virt-smoke
+as: virt-tests-virt-smoke
+from: virt-tests
+commands: virt-tests-virt-smoke-commands.sh
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+documentation: "Runs the virt/smoke suite from virt-tests"

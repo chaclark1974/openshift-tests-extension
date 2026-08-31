@@ -1,0 +1,9 @@
+ref: cnv-tests-cnv-smoke
+as: cnv-tests-cnv-smoke
+from: cnv-tests
+commands: cnv-tests-cnv-smoke-commands.sh
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+documentation: "Runs the cnv/smoke suite from cnv-tests"

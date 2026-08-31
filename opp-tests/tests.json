@@ -1,0 +1,144 @@
+{
+  "defaults": {
+    "tags": {
+      "product": "opp",
+      "tier": "0"
+    },
+    "lifecycle": "blocking",
+    "timeout": "5m"
+  },
+  "tests": [
+    {
+      "name": "[sig-opp] cluster operators are healthy and all nodes are ready",
+      "script": "scripts/check-cluster-health.sh",
+      "labels": ["SMOKE", "PREFLIGHT"],
+      "tags": { "component": "cluster", "interop-phase": "preflight" }
+    },
+    {
+      "name": "[sig-opp] ACM MultiClusterHub is running",
+      "script": "scripts/check-acm-hub.sh",
+      "labels": ["SMOKE", "INSTALL"],
+      "tags": { "component": "acm", "interop-phase": "install" }
+    },
+    {
+      "name": "[sig-opp] ACM managed clusters are joined and available",
+      "script": "scripts/check-acm-managed-clusters.sh",
+      "labels": ["INSTALL"],
+      "tags": { "tier": "1", "component": "acm", "interop-phase": "install" }
+    },
+    {
+      "name": "[sig-opp] ACM policies are Compliant on hub",
+      "script": "scripts/check-acm-policies-compliant.sh",
+      "labels": ["INSTALL", "GRC"],
+      "tags": { "tier": "1", "component": "acm", "interop-phase": "verify" }
+    },
+    {
+      "name": "[sig-opp] ACM Observability is ready",
+      "script": "scripts/check-acm-observability.sh",
+      "labels": ["INSTALL"],
+      "tags": { "tier": "1", "component": "acm", "interop-phase": "verify" },
+      "lifecycle": "informing"
+    },
+    {
+      "name": "[sig-opp] ACS Central is deployed and available",
+      "script": "scripts/check-acs-central.sh",
+      "labels": ["SMOKE", "INSTALL"],
+      "tags": { "component": "acs", "interop-phase": "install" }
+    },
+    {
+      "name": "[sig-opp] ACS Scanner is deployed and available",
+      "script": "scripts/check-acs-scanner.sh",
+      "labels": ["SMOKE", "INSTALL"],
+      "tags": { "component": "acs", "interop-phase": "install" }
+    },
+    {
+      "name": "[sig-opp] ACS init-bundle and TLS secrets are configured",
+      "script": "scripts/check-acs-init-bundle.sh",
+      "labels": ["INSTALL"],
+      "tags": { "component": "acs", "interop-phase": "install" }
+    },
+    {
+      "name": "[sig-opp] ACS SecuredCluster and collector are deployed",
+      "script": "scripts/check-acs-secured-clusters.sh",
+      "labels": ["INSTALL"],
+      "tags": { "tier": "1", "component": "acs", "interop-phase": "verify" }
+    },
+    {
+      "name": "[sig-opp] Quay registry is operational",
+      "script": "scripts/check-quay-registry.sh",
+      "labels": ["SMOKE", "INSTALL"],
+      "tags": { "component": "quay", "interop-phase": "install" }
+    },
+    {
+      "name": "[sig-opp] Quay Bridge operator is installed",
+      "script": "scripts/check-quay-bridge.sh",
+      "labels": ["INSTALL"],
+      "tags": { "tier": "1", "component": "quay", "interop-phase": "install" }
+    },
+    {
+      "name": "[sig-opp] ODF operator and StorageCluster are ready",
+      "script": "scripts/check-odf-deployment.sh",
+      "labels": ["SMOKE", "INSTALL"],
+      "tags": { "component": "odf", "interop-phase": "install" }
+    },
+    {
+      "name": "[sig-opp] NooBaa object storage is ready",
+      "script": "scripts/check-odf-noobaa.sh",
+      "labels": ["INSTALL"],
+      "tags": { "tier": "1", "component": "odf", "interop-phase": "install" }
+    },
+    {
+      "name": "[sig-opp] Compliance Operator is running",
+      "script": "scripts/check-compliance-operator.sh",
+      "labels": ["SMOKE", "INSTALL"],
+      "tags": { "component": "compliance", "interop-phase": "install" }
+    },
+    {
+      "name": "[sig-opp] all OPP operator CSVs are installed",
+      "script": "scripts/check-opp-operators-csv.sh",
+      "labels": ["SMOKE"],
+      "tags": { "tier": "1", "interop-phase": "verify" }
+    }
+  ],
+  "suites": [
+    {
+      "name": "opp/all",
+      "description": "All OpenShift Platform Plus tests"
+    },
+    {
+      "name": "opp/smoke",
+      "description": "Smoke tests for OpenShift Platform Plus",
+      "qualifiers": ["labels.exists(l, l==\"SMOKE\")"]
+    },
+    {
+      "name": "opp/preflight",
+      "description": "Cluster health preflight checks",
+      "qualifiers": ["labels.exists(l, l==\"PREFLIGHT\")"]
+    },
+    {
+      "name": "opp/install",
+      "description": "OPP component installation verification",
+      "qualifiers": ["labels.exists(l, l==\"INSTALL\")"]
+    },
+    {
+      "name": "opp/acs",
+      "description": "Advanced Cluster Security tests",
+      "qualifiers": ["tags[\"component\"] == \"acs\""]
+    },
+    {
+      "name": "opp/acm",
+      "description": "Advanced Cluster Management tests",
+      "qualifiers": ["tags[\"component\"] == \"acm\""]
+    },
+    {
+      "name": "opp/odf",
+      "description": "OpenShift Data Foundation tests",
+      "qualifiers": ["tags[\"component\"] == \"odf\""]
+    },
+    {
+      "name": "opp/quay",
+      "description": "Quay registry and bridge tests",
+      "qualifiers": ["tags[\"component\"] == \"quay\""]
+    }
+  ]
+}

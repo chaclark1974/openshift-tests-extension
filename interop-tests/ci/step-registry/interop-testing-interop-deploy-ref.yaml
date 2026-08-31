@@ -1,0 +1,9 @@
+ref: interop-testing-interop-deploy
+as: interop-testing-interop-deploy
+from: interop-tests
+commands: interop-testing-interop-deploy-commands.sh
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+documentation: Runs the interop/deploy suite from interop-tests

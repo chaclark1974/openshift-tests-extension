@@ -1,0 +1,9 @@
+ref: policy-collection-policy-collection-all
+as: policy-collection-policy-collection-all
+from: stolostron-policy-collection
+commands: policy-collection-policy-collection-all-commands.sh
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+documentation: "Runs the policy-collection/all suite from stolostron-policy-collection"

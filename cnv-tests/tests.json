@@ -1,0 +1,38 @@
+{
+  "defaults": {
+    "tags": {
+      "product": "cnv",
+      "tier": "0"
+    },
+    "lifecycle": "blocking",
+    "timeout": "5m"
+  },
+  "tests": [
+    {
+      "name": "[sig-cnv] CNV operator is running and available",
+      "script": "scripts/check-cnv-operator.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-cnv] virt-api deployment is available",
+      "script": "scripts/check-virt-api.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-cnv] VirtualMachine CRD is established",
+      "script": "scripts/check-vm-crd.sh",
+      "labels": ["SMOKE"]
+    }
+  ],
+  "suites": [
+    {
+      "name": "cnv/all",
+      "description": "All CNV tests"
+    },
+    {
+      "name": "cnv/smoke",
+      "description": "Smoke tests for CNV",
+      "qualifiers": ["labels.exists(l, l==\"SMOKE\")"]
+    }
+  ]
+}

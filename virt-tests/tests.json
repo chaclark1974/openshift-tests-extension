@@ -1,0 +1,69 @@
+{
+  "defaults": {
+    "tags": {
+      "product": "virt",
+      "tier": "0"
+    },
+    "lifecycle": "blocking",
+    "timeout": "5m"
+  },
+  "tests": [
+    {
+      "name": "[sig-virt] KubeVirt is deployed and available",
+      "script": "scripts/check-kubevirt-deployment.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-virt] virt-handler daemonset is healthy on all nodes",
+      "script": "scripts/check-virt-handler.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-virt] virt-controller deployment is available",
+      "script": "scripts/check-virt-controller.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-virt] all required KubeVirt CRDs are established",
+      "script": "scripts/check-vm-crds.sh",
+      "labels": ["SMOKE"]
+    },
+    {
+      "name": "[sig-virt] CDI is deployed and operational",
+      "script": "scripts/check-cdi-deployment.sh",
+      "labels": ["SMOKE"],
+      "tags": { "category": "storage" }
+    },
+    {
+      "name": "[sig-virt] live migration prerequisites are met",
+      "script": "scripts/check-live-migration-ready.sh",
+      "tags": { "tier": "1", "category": "migration" }
+    },
+    {
+      "name": "[sig-virt] storage profiles and classes are configured",
+      "script": "scripts/check-storage-profiles.sh",
+      "tags": { "tier": "1", "category": "storage" }
+    },
+    {
+      "name": "[sig-virt] network addons are available",
+      "script": "scripts/check-network-addons.sh",
+      "tags": { "tier": "1", "category": "networking" }
+    }
+  ],
+  "suites": [
+    {
+      "name": "virt/all",
+      "description": "All OpenShift Virtualization tests"
+    },
+    {
+      "name": "virt/smoke",
+      "description": "Smoke tests for OpenShift Virtualization",
+      "qualifiers": ["labels.exists(l, l==\"SMOKE\")"]
+    },
+    {
+      "name": "virt/infrastructure",
+      "description": "Storage, networking, and migration readiness tests",
+      "qualifiers": ["has(tags.category)"]
+    }
+  ]
+}

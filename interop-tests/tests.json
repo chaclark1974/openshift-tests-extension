@@ -1,0 +1,314 @@
+{
+  "defaults": {
+    "tags": {
+      "product": "interop",
+      "tier": "0"
+    },
+    "labels": [],
+    "lifecycle": "informing",
+    "timeout": "30m"
+  },
+  "tests": [
+    {
+      "name": "[sig-interop] Deploy ODF operator and storage cluster",
+      "script": "scripts/deploy-odf.sh",
+      "labels": ["DEPLOY", "CNV-ODF"],
+      "tags": {"upstream_ref": "interop-tests-deploy-odf"},
+      "timeout": "60m"
+    },
+    {
+      "name": "[sig-interop] Run OCS acceptance tests",
+      "script": "scripts/ocs-tests.sh",
+      "labels": ["TEST", "CNV-ODF"],
+      "tags": {"upstream_ref": "interop-tests-ocs-tests"},
+      "timeout": "60m"
+    },
+    {
+      "name": "[sig-interop] Run CNV E2E deploy tests",
+      "script": "scripts/cnv-tests-e2e-deploy.sh",
+      "labels": ["TEST", "CNV-ODF"],
+      "tags": {"upstream_ref": "interop-tests-cnv-tests-e2e-deploy"},
+      "timeout": "60m"
+    },
+    {
+      "name": "[sig-interop] Run CNV smoke tests",
+      "script": "scripts/cnv-tests-smoke.sh",
+      "labels": ["TEST", "SMOKE", "CNV-ODF"],
+      "tags": {"upstream_ref": "interop-tests-cnv-tests-smoke"},
+      "timeout": "30m"
+    },
+    {
+      "name": "[sig-interop] Run OpenShift Virtualization smoke tests",
+      "script": "scripts/openshift-virt-tests.sh",
+      "labels": ["TEST", "SMOKE", "CNV-ODF"],
+      "tags": {"upstream_ref": "interop-tests-openshift-virtualization-tests"},
+      "timeout": "60m"
+    },
+    {
+      "name": "[sig-interop] Capture pre-upgrade cluster backup",
+      "script": "scripts/opp-backup.sh",
+      "labels": ["SETUP", "OPP"],
+      "tags": {"upstream_ref": "interop-opp-backup"},
+      "timeout": "15m"
+    },
+    {
+      "name": "[sig-interop] Run OPP pre-flight validation",
+      "script": "scripts/opp-preflight.sh",
+      "labels": ["TEST", "OPP"],
+      "tags": {"upstream_ref": "interop-opp-preflight"},
+      "timeout": "30m"
+    },
+    {
+      "name": "[sig-interop] Upgrade OCP and validate OPP operators",
+      "script": "scripts/opp-upgrade.sh",
+      "labels": ["DEPLOY", "OPP"],
+      "tags": {"upstream_ref": "interop-opp-upgrade"},
+      "timeout": "60m"
+    },
+    {
+      "name": "[sig-interop] Run OPP post-upgrade smoke tests",
+      "script": "scripts/opp-smoke.sh",
+      "labels": ["TEST", "SMOKE", "OPP"],
+      "tags": {"upstream_ref": "interop-opp-smoke"},
+      "timeout": "30m"
+    },
+    {
+      "name": "[sig-interop] Prepare cluster for CNV upgrade",
+      "script": "scripts/cnv-upgrade-prep.sh",
+      "labels": ["SETUP", "CNV-UPGRADE"],
+      "tags": {"upstream_ref": "interop-tests-openshift-virtualization-upgrade-prep"},
+      "timeout": "60m"
+    },
+    {
+      "name": "[sig-interop] Run CNV upgrade validation tests",
+      "script": "scripts/cnv-upgrade-tests.sh",
+      "labels": ["TEST", "CNV-UPGRADE"],
+      "tags": {"upstream_ref": "interop-tests-openshift-virtualization-upgrade-tests"},
+      "timeout": "60m"
+    },
+    {
+      "name": "[sig-interop] Create IBM Fusion Access namespaces",
+      "script": "scripts/ibm-fa-create-namespaces.sh",
+      "labels": ["SETUP", "IBM-FUSION"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-create-namespaces"},
+      "timeout": "5m"
+    },
+    {
+      "name": "[sig-interop] Create IBM Fusion Access pull secrets",
+      "script": "scripts/ibm-fa-create-pull-secrets.sh",
+      "labels": ["SETUP", "IBM-FUSION"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-create-pull-secrets"},
+      "timeout": "5m"
+    },
+    {
+      "name": "[sig-interop] Configure AWS security groups for Storage Scale",
+      "script": "scripts/ibm-fa-configure-aws-sg.sh",
+      "labels": ["SETUP", "IBM-FUSION"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-configure-aws-security-groups"},
+      "timeout": "30m"
+    },
+    {
+      "name": "[sig-interop] Install Fusion Access operator",
+      "script": "scripts/ibm-fa-install-operator.sh",
+      "labels": ["DEPLOY", "IBM-FUSION"],
+      "tags": {"upstream_ref": "ibm-fusion-access-install-fusion-access-operator"},
+      "timeout": "30m"
+    },
+    {
+      "name": "[sig-interop] Create FusionAccess custom resource",
+      "script": "scripts/ibm-fa-create-fusionaccess.sh",
+      "labels": ["DEPLOY", "IBM-FUSION"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-create-fusionaccess-resource"},
+      "timeout": "10m"
+    },
+    {
+      "name": "[sig-interop] Configure KMM registry for GPFS modules",
+      "script": "scripts/ibm-fa-configure-kmm.sh",
+      "labels": ["SETUP", "IBM-FUSION"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-configure-kmm-registry"},
+      "timeout": "10m"
+    },
+    {
+      "name": "[sig-interop] Check IBM Storage Scale CRDs",
+      "script": "scripts/ibm-fa-check-crds.sh",
+      "labels": ["TEST", "IBM-FUSION"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-check-crds"},
+      "timeout": "15m"
+    },
+    {
+      "name": "[sig-interop] Check worker nodes for Storage Scale",
+      "script": "scripts/ibm-fa-check-nodes.sh",
+      "labels": ["TEST", "IBM-FUSION"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-check-nodes"},
+      "timeout": "5m"
+    },
+    {
+      "name": "[sig-interop] Label nodes for IBM Storage Scale",
+      "script": "scripts/ibm-fa-label-nodes.sh",
+      "labels": ["SETUP", "IBM-FUSION"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-label-nodes"},
+      "timeout": "5m"
+    },
+    {
+      "name": "[sig-interop] Prepare worker nodes for Storage Scale",
+      "script": "scripts/ibm-fa-prepare-workers.sh",
+      "labels": ["SETUP", "IBM-FUSION"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-prepare-worker-nodes"},
+      "timeout": "10m"
+    },
+    {
+      "name": "[sig-interop] Prepare lxtrace files for RHCOS compat",
+      "script": "scripts/ibm-fa-prepare-lxtrace.sh",
+      "labels": ["SETUP", "IBM-FUSION"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-prepare-lxtrace-files"},
+      "timeout": "10m"
+    },
+    {
+      "name": "[sig-interop] Create IBM Storage Scale cluster",
+      "script": "scripts/ibm-fa-create-cluster.sh",
+      "labels": ["DEPLOY", "IBM-FUSION"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-create-cluster"},
+      "timeout": "15m"
+    },
+    {
+      "name": "[sig-interop] Patch buildgpl for RHCOS compatibility",
+      "script": "scripts/ibm-fa-patch-buildgpl.sh",
+      "labels": ["SETUP", "IBM-FUSION"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-patch-buildgpl"},
+      "timeout": "20m"
+    },
+    {
+      "name": "[sig-interop] Create local disks for EBS volumes",
+      "script": "scripts/ibm-fa-create-local-disks.sh",
+      "labels": ["SETUP", "IBM-FUSION", "IBM-FUSION-EBS"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-create-local-disks"},
+      "timeout": "10m"
+    },
+    {
+      "name": "[sig-interop] Create IBM Storage Scale EBS filesystem",
+      "script": "scripts/ibm-fa-create-ebs-filesystem.sh",
+      "labels": ["DEPLOY", "IBM-FUSION", "IBM-FUSION-EBS"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-create-ebs-filesystem"},
+      "timeout": "60m"
+    },
+    {
+      "name": "[sig-interop] Verify IBM Storage Scale cluster health",
+      "script": "scripts/ibm-fa-verify-cluster.sh",
+      "labels": ["TEST", "IBM-FUSION"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-verify-cluster"},
+      "timeout": "10m"
+    },
+    {
+      "name": "[sig-interop] Create IBM Storage Scale shared filesystem",
+      "script": "scripts/ibm-fa-create-shared-fs.sh",
+      "labels": ["DEPLOY", "IBM-FUSION", "IBM-FUSION-CNV"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-create-shared-filesystem"},
+      "timeout": "60m"
+    },
+    {
+      "name": "[sig-interop] Configure CNV shared storage for Scale",
+      "script": "scripts/ibm-fa-configure-cnv-storage.sh",
+      "labels": ["SETUP", "IBM-FUSION", "IBM-FUSION-CNV"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-configure-cnv-shared-storage"},
+      "timeout": "30m"
+    },
+    {
+      "name": "[sig-interop] Test CNV VMs with Scale shared storage",
+      "script": "scripts/ibm-fa-test-cnv-shared.sh",
+      "labels": ["TEST", "IBM-FUSION", "IBM-FUSION-CNV"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-test-cnv-shared-storage"},
+      "timeout": "60m"
+    },
+    {
+      "name": "[sig-interop] Test VM lifecycle with shared storage",
+      "script": "scripts/ibm-fa-test-vm-lifecycle.sh",
+      "labels": ["TEST", "IBM-FUSION", "IBM-FUSION-CNV"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-test-vm-lifecycle"},
+      "timeout": "60m"
+    },
+    {
+      "name": "[sig-interop] Test VM live migration with shared storage",
+      "script": "scripts/ibm-fa-test-vm-migration.sh",
+      "labels": ["TEST", "IBM-FUSION", "IBM-FUSION-CNV"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-test-vm-migration"},
+      "timeout": "60m"
+    },
+    {
+      "name": "[sig-interop] Test VM snapshots with Scale CSI",
+      "script": "scripts/ibm-fa-test-vm-snapshots.sh",
+      "labels": ["TEST", "IBM-FUSION", "IBM-FUSION-CNV"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-test-vm-snapshots"},
+      "timeout": "60m"
+    },
+    {
+      "name": "[sig-interop] Verify shared storage between CNV and Fusion",
+      "script": "scripts/ibm-fa-verify-shared-storage.sh",
+      "labels": ["TEST", "IBM-FUSION", "IBM-FUSION-CNV"],
+      "tags": {"upstream_ref": "interop-tests-ibm-fusion-access-verify-shared-storage"},
+      "timeout": "30m"
+    },
+    {
+      "name": "[sig-interop] Run GS bare-metal localnet tests",
+      "script": "scripts/gs-baremetal-localnet.sh",
+      "labels": ["TEST", "GS-BAREMETAL"],
+      "tags": {"upstream_ref": "gs-baremetal-localnet-test"},
+      "timeout": "60m"
+    }
+  ],
+  "suites": [
+    {
+      "name": "interop/all",
+      "description": "All interop tests"
+    },
+    {
+      "name": "interop/smoke",
+      "description": "Quick validation smoke tests",
+      "qualifiers": ["labels.exists(l, l==\"SMOKE\")"]
+    },
+    {
+      "name": "interop/cnv-odf",
+      "description": "CNV+ODF interop scenario",
+      "qualifiers": ["labels.exists(l, l==\"CNV-ODF\")"]
+    },
+    {
+      "name": "interop/opp",
+      "description": "OPP upgrade pipeline",
+      "qualifiers": ["labels.exists(l, l==\"OPP\")"]
+    },
+    {
+      "name": "interop/cnv-upgrade",
+      "description": "CNV upgrade tests",
+      "qualifiers": ["labels.exists(l, l==\"CNV-UPGRADE\")"]
+    },
+    {
+      "name": "interop/ibm-fusion",
+      "description": "All IBM Fusion Access tests",
+      "qualifiers": ["labels.exists(l, l==\"IBM-FUSION\")"]
+    },
+    {
+      "name": "interop/ibm-fusion-setup",
+      "description": "IBM Fusion environment setup steps",
+      "qualifiers": ["labels.exists(l, l==\"IBM-FUSION\") && (labels.exists(l, l==\"SETUP\") || labels.exists(l, l==\"DEPLOY\"))"]
+    },
+    {
+      "name": "interop/ibm-fusion-ebs",
+      "description": "IBM Fusion EBS integration",
+      "qualifiers": ["labels.exists(l, l==\"IBM-FUSION-EBS\")"]
+    },
+    {
+      "name": "interop/ibm-fusion-cnv",
+      "description": "IBM Fusion CNV shared storage tests",
+      "qualifiers": ["labels.exists(l, l==\"IBM-FUSION-CNV\")"]
+    },
+    {
+      "name": "interop/gs-baremetal",
+      "description": "GS bare-metal localnet tests",
+      "qualifiers": ["labels.exists(l, l==\"GS-BAREMETAL\")"]
+    },
+    {
+      "name": "interop/deploy",
+      "description": "All deploy and setup steps",
+      "qualifiers": ["labels.exists(l, l==\"DEPLOY\") || labels.exists(l, l==\"SETUP\")"]
+    }
+  ]
+}
