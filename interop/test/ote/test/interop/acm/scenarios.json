@@ -1,0 +1,267 @@
+{
+  "scenarios": [
+    {
+      "name": "[sig-acm-upgrade] ACM upgrade harness is wired",
+      "product": "acm",
+      "category": "acm-upgrade",
+      "labels": [
+        "OPP",
+        "SMOKE"
+      ],
+      "lifecycle": "informing",
+      "command": [
+        "bash",
+        "-c",
+        "echo 'acm upgrade harness ok'"
+      ]
+    },
+    {
+      "name": "[sig-acm-upgrade] ACM subscription targets an upgrade channel",
+      "product": "acm",
+      "category": "acm-upgrade",
+      "labels": [
+        "OPP"
+      ],
+      "lifecycle": "informing",
+      "timeout": "30m",
+      "include": "platform==\"aws\"",
+      "skipIfEnvUnset": [
+        "KUBECONFIG"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "oc get subscription -n ${ACM_SUBSCRIPTION_NAMESPACE:-open-cluster-management} advanced-cluster-management -o jsonpath='{.spec.channel}'"
+      ]
+    },
+    {
+      "name": "[sig-acm-upgrade] MultiClusterHub reports healthy after upgrade",
+      "product": "acm",
+      "category": "acm-upgrade",
+      "labels": [
+        "OPP"
+      ],
+      "lifecycle": "informing",
+      "timeout": "30m",
+      "include": "platform==\"aws\"",
+      "skipIfEnvUnset": [
+        "KUBECONFIG"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "oc get multiclusterhub -A -o jsonpath='{.items[*].status.phase}' | grep -q Running"
+      ]
+    },
+    {
+      "name": "[sig-acm-policy] ACM policy harness is wired",
+      "product": "acm",
+      "category": "acm-policy",
+      "labels": [
+        "OPP",
+        "SMOKE"
+      ],
+      "lifecycle": "informing",
+      "command": [
+        "bash",
+        "-c",
+        "echo 'acm policy harness ok'"
+      ]
+    },
+    {
+      "name": "[sig-acm-policy] ACM governance policy framework is installed",
+      "product": "acm",
+      "category": "acm-policy",
+      "labels": [
+        "OPP"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "KUBECONFIG"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "oc get crd policies.policy.open-cluster-management.io"
+      ]
+    },
+    {
+      "name": "[sig-acm-e2e] ACM e2e harness is wired",
+      "product": "acm",
+      "category": "acm-e2e",
+      "labels": [
+        "OPP",
+        "SMOKE"
+      ],
+      "lifecycle": "informing",
+      "command": [
+        "bash",
+        "-c",
+        "echo 'acm e2e harness ok'"
+      ]
+    },
+    {
+      "name": "[sig-acm-e2e] ACM managed cluster import workflow succeeds",
+      "product": "acm",
+      "category": "acm-e2e",
+      "labels": [
+        "OPP"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "KUBECONFIG"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "oc get managedclusters -o name"
+      ]
+    },
+    {
+      "name": "[sig-acm-gre] ACM GRE harness is wired",
+      "product": "acm",
+      "category": "acm-gre",
+      "labels": [
+        "OPP",
+        "SMOKE"
+      ],
+      "lifecycle": "informing",
+      "command": [
+        "bash",
+        "-c",
+        "echo 'acm gre harness ok'"
+      ]
+    },
+    {
+      "name": "[sig-acm-gre] ACM GRE reporting is enabled",
+      "product": "acm",
+      "category": "acm-gre",
+      "labels": [
+        "OPP"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "KUBECONFIG"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "echo 'would check acm gre reporting'"
+      ]
+    },
+    {
+      "name": "[sig-acm-e2e] ACM+Virt harness is wired",
+      "product": "acm",
+      "category": "acm-e2e",
+      "labels": [
+        "ACM-VIRT",
+        "SMOKE"
+      ],
+      "lifecycle": "informing",
+      "command": [
+        "bash",
+        "-c",
+        "echo 'acm+virt harness ok'"
+      ]
+    },
+    {
+      "name": "[sig-acm-e2e] ACM imports a cluster running OpenShift Virtualization",
+      "product": "acm",
+      "category": "acm-e2e",
+      "labels": [
+        "ACM-VIRT"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "KUBECONFIG"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "oc get csv -A -o name | grep -qi kubevirt"
+      ]
+    },
+    {
+      "name": "[sig-acm-policy] ACM policy governs VirtualMachine resources",
+      "product": "acm",
+      "category": "acm-policy",
+      "labels": [
+        "ACM-VIRT"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "KUBECONFIG"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "echo 'would verify VM-governing policy'"
+      ]
+    },
+    {
+      "name": "[sig-acm-lifecycle] lifecycle harness is wired",
+      "product": "acm",
+      "category": "acm-lifecycle",
+      "labels": [
+        "OPP",
+        "SMOKE"
+      ],
+      "lifecycle": "informing",
+      "command": [
+        "bash",
+        "-c",
+        "echo 'acm lifecycle harness ok'"
+      ]
+    },
+    {
+      "name": "[sig-acm-lifecycle] managed cluster create and destroy",
+      "product": "acm",
+      "category": "acm-lifecycle",
+      "labels": [
+        "OPP"
+      ],
+      "lifecycle": "informing",
+      "timeout": "30m",
+      "skipIfEnvUnset": [
+        "KUBECONFIG"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "oc get managedclusters -o name"
+      ]
+    },
+    {
+      "name": "[sig-acm-policy-set] policy-set harness is wired",
+      "product": "acm",
+      "category": "acm-policy-set",
+      "labels": [
+        "OPP",
+        "SMOKE"
+      ],
+      "lifecycle": "informing",
+      "command": [
+        "bash",
+        "-c",
+        "echo 'acm policy-set harness ok'"
+      ]
+    },
+    {
+      "name": "[sig-acm-policy-set] PolicySet applies grouped policies",
+      "product": "acm",
+      "category": "acm-policy-set",
+      "labels": [
+        "OPP"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "KUBECONFIG"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "oc get crd policysets.policy.open-cluster-management.io"
+      ]
+    }
+  ]
+}

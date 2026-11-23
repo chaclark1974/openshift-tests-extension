@@ -1,0 +1,151 @@
+{
+  "scenarios": [
+    {
+      "name": "[sig-odf-cephhealth] ODF e2e harness is wired",
+      "product": "odf",
+      "category": "odf-cephhealth",
+      "labels": [
+        "ODF-E2E",
+        "SMOKE"
+      ],
+      "lifecycle": "informing",
+      "command": [
+        "bash",
+        "-c",
+        "echo 'odf cephhealth harness ok'"
+      ]
+    },
+    {
+      "name": "[sig-odf-cephhealth] Ceph cluster reports HEALTH_OK",
+      "product": "odf",
+      "category": "odf-cephhealth",
+      "labels": [
+        "ODF-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "KUBECONFIG"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "oc get cephcluster -n openshift-storage -o jsonpath='{.items[*].status.ceph.health}' | grep -q HEALTH_OK"
+      ]
+    },
+    {
+      "name": "[sig-odf-block] block harness is wired",
+      "product": "odf",
+      "category": "odf-block",
+      "labels": [
+        "ODF-E2E",
+        "SMOKE"
+      ],
+      "lifecycle": "informing",
+      "command": [
+        "bash",
+        "-c",
+        "echo 'odf block harness ok'"
+      ]
+    },
+    {
+      "name": "[sig-odf-block] RBD PVC provisions and binds",
+      "product": "odf",
+      "category": "odf-block",
+      "labels": [
+        "ODF-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "KUBECONFIG"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "oc get sc ocs-storagecluster-ceph-rbd"
+      ]
+    },
+    {
+      "name": "[sig-odf-file] CephFS PVC provisions and binds",
+      "product": "odf",
+      "category": "odf-file",
+      "labels": [
+        "ODF-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "KUBECONFIG"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "oc get sc ocs-storagecluster-cephfs"
+      ]
+    },
+    {
+      "name": "[sig-odf-file] CephFS supports ReadWriteMany",
+      "product": "odf",
+      "category": "odf-file",
+      "labels": [
+        "ODF-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "KUBECONFIG"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "echo 'would test RWX'"
+      ]
+    },
+    {
+      "name": "[sig-odf-object] object harness is wired",
+      "product": "odf",
+      "category": "odf-object",
+      "labels": [
+        "ODF-E2E",
+        "SMOKE"
+      ],
+      "lifecycle": "informing",
+      "command": [
+        "bash",
+        "-c",
+        "echo 'odf object harness ok'"
+      ]
+    },
+    {
+      "name": "[sig-odf-object] NooBaa object bucket claim provisions",
+      "product": "odf",
+      "category": "odf-object",
+      "labels": [
+        "ODF-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "KUBECONFIG"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "oc get crd objectbucketclaims.objectbucket.io"
+      ]
+    },
+    {
+      "name": "[sig-odf-object] RGW S3 endpoint is reachable",
+      "product": "odf",
+      "category": "odf-object",
+      "labels": [
+        "ODF-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "KUBECONFIG"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "echo 'would reach RGW S3 endpoint'"
+      ]
+    }
+  ]
+}

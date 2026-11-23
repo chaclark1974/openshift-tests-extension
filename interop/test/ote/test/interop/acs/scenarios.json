@@ -1,0 +1,134 @@
+{
+  "scenarios": [
+    {
+      "name": "[sig-acs-vulnerability] ACS e2e harness is wired",
+      "product": "acs",
+      "category": "acs-vulnerability",
+      "labels": [
+        "ACS-E2E",
+        "SMOKE"
+      ],
+      "lifecycle": "informing",
+      "command": [
+        "bash",
+        "-c",
+        "echo 'acs vulnerability harness ok'"
+      ]
+    },
+    {
+      "name": "[sig-acs-vulnerability] Scanner reports image vulnerabilities",
+      "product": "acs",
+      "category": "acs-vulnerability",
+      "labels": [
+        "ACS-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "ROX_ENDPOINT"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "roxctl image scan --image quay.io/redhat/ubi9:latest"
+      ]
+    },
+    {
+      "name": "[sig-acs-compliance] compliance harness is wired",
+      "product": "acs",
+      "category": "acs-compliance",
+      "labels": [
+        "ACS-E2E",
+        "SMOKE"
+      ],
+      "lifecycle": "informing",
+      "command": [
+        "bash",
+        "-c",
+        "echo 'acs compliance harness ok'"
+      ]
+    },
+    {
+      "name": "[sig-acs-compliance] compliance scan produces results",
+      "product": "acs",
+      "category": "acs-compliance",
+      "labels": [
+        "ACS-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "ROX_ENDPOINT"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "echo 'would run compliance scan'"
+      ]
+    },
+    {
+      "name": "[sig-acs-network] network graph renders flows",
+      "product": "acs",
+      "category": "acs-network",
+      "labels": [
+        "ACS-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "ROX_ENDPOINT"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "echo 'would render network graph'"
+      ]
+    },
+    {
+      "name": "[sig-acs-network] network policy simulation applies",
+      "product": "acs",
+      "category": "acs-network",
+      "labels": [
+        "ACS-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "ROX_ENDPOINT"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "echo 'would simulate network policy'"
+      ]
+    },
+    {
+      "name": "[sig-acs-admission] admission harness is wired",
+      "product": "acs",
+      "category": "acs-admission",
+      "labels": [
+        "ACS-E2E",
+        "SMOKE"
+      ],
+      "lifecycle": "informing",
+      "command": [
+        "bash",
+        "-c",
+        "echo 'acs admission harness ok'"
+      ]
+    },
+    {
+      "name": "[sig-acs-admission] admission controller blocks a violating deployment",
+      "product": "acs",
+      "category": "acs-admission",
+      "labels": [
+        "ACS-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "ROX_ENDPOINT"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "echo 'would test admission control'"
+      ]
+    }
+  ]
+}

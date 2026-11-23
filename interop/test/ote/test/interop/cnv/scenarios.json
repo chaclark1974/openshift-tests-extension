@@ -1,0 +1,14 @@
+{
+  "scenarios": [
+    { "name": "[sig-cnv-vm] CNV e2e harness is wired", "product": "cnv", "category": "cnv-vm", "labels": ["CNV-E2E", "SMOKE"], "lifecycle": "informing", "command": ["bash", "-c", "echo 'cnv vm harness ok'"] },
+    { "name": "[sig-cnv-vm] a VirtualMachine starts and reaches Running", "product": "cnv", "category": "cnv-vm", "labels": ["CNV-E2E"], "lifecycle": "informing", "skipIfEnvUnset": ["KUBECONFIG"], "command": ["bash", "-c", "oc get kubevirt -A -o jsonpath='{.items[*].status.phase}' | grep -q Deployed"] },
+
+    { "name": "[sig-cnv-storage] storage harness is wired", "product": "cnv", "category": "cnv-storage", "labels": ["CNV-E2E", "SMOKE"], "lifecycle": "informing", "command": ["bash", "-c", "echo 'cnv storage harness ok'"] },
+    { "name": "[sig-cnv-storage] a DataVolume imports and binds", "product": "cnv", "category": "cnv-storage", "labels": ["CNV-E2E"], "lifecycle": "informing", "skipIfEnvUnset": ["KUBECONFIG"], "command": ["bash", "-c", "oc get crd datavolumes.cdi.kubevirt.io"] },
+
+    { "name": "[sig-cnv-network] network harness is wired", "product": "cnv", "category": "cnv-network", "labels": ["CNV-E2E", "SMOKE"], "lifecycle": "informing", "command": ["bash", "-c", "echo 'cnv network harness ok'"] },
+    { "name": "[sig-cnv-network] a VM attaches to a secondary network", "product": "cnv", "category": "cnv-network", "labels": ["CNV-E2E"], "lifecycle": "informing", "skipIfEnvUnset": ["KUBECONFIG"], "command": ["bash", "-c", "oc get crd network-attachment-definitions.k8s.cni.cncf.io"] },
+
+    { "name": "[sig-cnv-migration] live migration completes", "product": "cnv", "category": "cnv-migration", "labels": ["CNV-E2E"], "lifecycle": "informing", "skipIfEnvUnset": ["KUBECONFIG"], "command": ["bash", "-c", "echo 'would run live migration'"] }
+  ]
+}

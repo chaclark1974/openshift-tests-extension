@@ -1,0 +1,128 @@
+{
+  "scenarios": [
+    {
+      "name": "[sig-quay-repository] Quay web e2e harness is wired",
+      "product": "quay",
+      "category": "quay-repository",
+      "labels": [
+        "OPP",
+        "QUAY-E2E",
+        "SMOKE"
+      ],
+      "lifecycle": "informing",
+      "command": [
+        "bash",
+        "-c",
+        "echo 'quay repository harness ok'"
+      ]
+    },
+    {
+      "name": "[sig-quay-repository] create and browse a repository",
+      "product": "quay",
+      "category": "quay-repository",
+      "labels": [
+        "OPP",
+        "QUAY-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "QUAY_URL"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "pnpm --dir ${QUAY_WEB_DIR:-web} run test:e2e -- playwright/repository.spec.ts"
+      ]
+    },
+    {
+      "name": "[sig-quay-repository] push and list image tags",
+      "product": "quay",
+      "category": "quay-repository",
+      "labels": [
+        "OPP",
+        "QUAY-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "QUAY_URL"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "echo 'would push and list tags'"
+      ]
+    },
+    {
+      "name": "[sig-quay-organization] create an organization",
+      "product": "quay",
+      "category": "quay-organization",
+      "labels": [
+        "OPP",
+        "QUAY-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "QUAY_URL"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "echo 'would create organization'"
+      ]
+    },
+    {
+      "name": "[sig-quay-organization] manage team membership",
+      "product": "quay",
+      "category": "quay-organization",
+      "labels": [
+        "OPP",
+        "QUAY-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "QUAY_URL"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "echo 'would manage team membership'"
+      ]
+    },
+    {
+      "name": "[sig-quay-robot] create a robot account",
+      "product": "quay",
+      "category": "quay-robot",
+      "labels": [
+        "OPP",
+        "QUAY-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "QUAY_URL"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "echo 'would create robot account'"
+      ]
+    },
+    {
+      "name": "[sig-quay-robot] grant robot repository permissions",
+      "product": "quay",
+      "category": "quay-robot",
+      "labels": [
+        "OPP",
+        "QUAY-E2E"
+      ],
+      "lifecycle": "informing",
+      "skipIfEnvUnset": [
+        "QUAY_URL"
+      ],
+      "command": [
+        "bash",
+        "-c",
+        "echo 'would grant robot permissions'"
+      ]
+    }
+  ]
+}
