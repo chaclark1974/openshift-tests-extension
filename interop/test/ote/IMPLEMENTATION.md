@@ -8,7 +8,7 @@ architecture with a generic exec adapter (no Ginkgo).
 - **Module:** `github.com/stolostron/cluster-lifecycle-e2e/openshift-tests-ext`
 - **Binary / project root:** `ote--interop` / `interop/test/ote/`
 - **Go:** 1.23+ · **OTE framework:** `github.com/openshift-eng/openshift-tests-extension`
-- **Totals:** 5 components · **47 tests** · **33 suites**
+- **Totals:** 5 components · **47 tests** · **34 suites**
 
 > Companion doc: `README.md` (quick‑start oriented). This file is the deep
 > implementation reference and the current source‑of‑truth catalog snapshot.
@@ -57,14 +57,24 @@ interop/test/ote/                          # PROJECT ROOT (go.mod)
 ├── pkg/
 │   └── adapter/
 │       └── adapter.go                     # generic exec adapter
-└── scenarios/
-    ├── embed.go                       # //go:embed acm acs cnv odf quay
-    ├── acm/scenarios.json             # 16 scenarios
-    ├── quay/scenarios.json            # 7
-    ├── acs/scenarios.json             # 8
-    ├── odf/scenarios.json             # 9
-    └── cnv/scenarios.json             # 7
+├── scenarios/                        # embedded test catalogs (drives the binary)
+│   ├── embed.go                       # //go:embed acm acs cnv odf quay
+│   ├── acm/scenarios.json             # 16 scenarios
+│   ├── quay/scenarios.json            # 7
+│   ├── acs/scenarios.json             # 8
+│   ├── odf/scenarios.json             # 9
+│   └── cnv/scenarios.json             # 7
+└── test-suites/                      # per-product runner assets (scaffold; NOT yet wired)
+    ├── acm/policy-set/opp-bundle/deployment/
+    ├── acm/policy-set/security-scan/ctr-img/acs/app-deployment/
+    ├── acs/   cnv/   odf/
+    └── quay/smoke/acs-odf/registry/
 ```
+
+> `scenarios/` is embedded and drives the binary. `test-suites/` holds on-disk
+> runner assets (scripts, configs) that scenario `command`s will exec; it is
+> **not** embedded and **not yet referenced** by any scenario. Its runtime
+> location is given by `OTE_TEST_SUITES_DIR` (see §9).
 
 ---
 
@@ -76,7 +86,7 @@ component** (used when `--component` is omitted). All others require
 
 | Component identifier (`--component`) | Dir | Tests | Suites | Upstream reference (modeled, not pulled) |
 |--------------------------------------|-----|-------|--------|------------------------------------------|
-| `acm:layered-product:acm-tests` (default) | `scenarios/acm/` | 16 | 10 | ACM / `stolostron`; OPP upgrade commands script |
+| `acm:layered-product:acm-tests` (default) | `scenarios/acm/` | 16 | 11 | ACM / `stolostron`; OPP upgrade commands script |
 | `quay:layered-product:quay-tests` | `scenarios/quay/` | 7 | 5 | `quay/quay` web Playwright e2e |
 | `acs:layered-product:acs-tests` | `scenarios/acs/` | 8 | 6 | `stackrox/stackrox` qa-tests-backend |
 | `odf:layered-product:odf-tests` | `scenarios/odf/` | 9 | 6 | `red-hat-storage/ocs-ci` (pytest) |
@@ -96,6 +106,7 @@ File shape: `{ "scenarios": [ ScenarioSpec, ... ] }`.
 | `product` | string | ✅ | Routes to a component. → tag `product`. |
 | `category` | string | | Functional area. → tag `category`. |
 | `labels` | []string | | Membership flags (scenario/depth/product): `OPP`, `ACM-VIRT`, `SMOKE`, `QUAY-E2E`, … |
+| `tags` | map[string]string | | Arbitrary extra key/value tags, merged into the spec tags (e.g. `{"tier":"0","TS":"policy-set/opp-bundle/deployment"}`). `product`/`category` are reserved and always win. |
 | `lifecycle` | string | | `informing` (used throughout) or `blocking`. |
 | `timeout` | string | | Go duration (`"30m"`); wraps the exec in a context timeout. |
 | `include` | string | | CEL env gate (`platform=="aws"`); test runs only where true. |
@@ -139,13 +150,11 @@ invalid `timeout` rejected.
    `Output`.
 4. Exit `0` → `passed`; non‑zero → `failed` (error recorded).
 
-It also sets `Lifecycle`, `Timeout`, tags (`product`, `category`), `Labels`, and
-`Include` (env gating) on the spec. The adapter is deliberately generic — adding
-a product or test requires **no adapter changes**.
-
-> Current limitation: the adapter maps only `product` and `category` into
-> `tags`. Arbitrary JSON‑defined tags (e.g. a `subarea` key) would require a
-> small extension here.
+It also sets `Lifecycle`, `Timeout`, tags, `Labels`, and `Include` (env gating)
+on the spec. Tags are built by **merging the scenario's `tags` object first,
+then applying the reserved keys `product` and `category` last** (so they always
+win over a custom tag of the same name). The adapter is deliberately generic —
+adding a product, test, or custom tag requires **no adapter changes**.
 
 ---
 
@@ -174,7 +183,7 @@ CEL variables: `source`, `name`, `originalName`, `labels` (list), `tags` (map),
 
 ## 7. Suites reference (qualifiers shown without the auto `source==` guard)
 
-### ACM — `acm:layered-product:acm-tests` (10)
+### ACM — `acm:layered-product:acm-tests` (11)
 | Suite | Qualifier |
 |-------|-----------|
 | `acm/opp` | `labels.exists(l, l=="OPP")` |
@@ -182,11 +191,18 @@ CEL variables: `source`, `name`, `originalName`, `labels` (list), `tags` (map),
 | `acm/upgrade` | `tags["category"] == "acm-upgrade"` |
 | `acm/policy` | `tags["category"] == "acm-policy"` |
 | `acm/policy-set` | `tags["category"] == "acm-policy-set"` |
+| `acm/policy-set/opp-bundle/deployment` | `"TS" in tags && tags["TS"] == "policy-set/opp-bundle/deployment"` |
 | `acm/lifecycle` | `tags["category"] == "acm-lifecycle"` |
 | `acm/e2e` | `tags["category"] == "acm-e2e"` |
 | `acm/gre` | `tags["category"] == "acm-gre"` |
 | `acm/smoke` | `labels.exists(l, l=="SMOKE")` |
 | `acm/policy-smoke` | `tags["category"]=="acm-policy" && labels.exists(l,l=="SMOKE")` |
+
+> The `acm/policy-set/opp-bundle/deployment` suite selects on a **custom tag**
+> (`TS`). Because `TS` is an *optional* tag (not on every spec), its qualifier
+> must guard key existence with `"TS" in tags && …` — a bare `tags["TS"] == …`
+> errors with `no such key: TS` on specs that lack it. (Always-present tags like
+> `product`/`category` don't need the guard.)
 
 ### Quay — `quay:layered-product:quay-tests` (5)
 | Suite | Qualifier |
@@ -252,6 +268,10 @@ acm-lifecycle   OPP              [sig-acm-lifecycle] managed cluster create and 
 acm-policy-set  OPP,SMOKE        [sig-acm-policy-set] policy-set harness is wired
 acm-policy-set  OPP              [sig-acm-policy-set] PolicySet applies grouped policies
 ```
+
+> Custom tags on ACM specs (not shown above): the `acm-upgrade` wired test carries
+> `tier=0, owner=interop-qe`; both `acm-policy-set` tests carry
+> `TS=policy-set/opp-bundle/deployment`.
 
 ### Quay (7) — all `OPP`,`QUAY-E2E`
 ```
@@ -319,6 +339,15 @@ GO_COMPLIANCE_POLICY="exempt_all" go build -ldflags "$(LDFLAGS)" -o ote--interop
   binary; never set it globally.
 - `LDFLAGS` stamp version metadata into the OTE framework's `pkg/version`.
 - Other targets: `make clean`, `make test`, `make list`, `make validate`.
+
+**Runtime assets (`OTE_TEST_SUITES_DIR`):** the Makefile exports
+`OTE_TEST_SUITES_DIR ?= $(HOME)/ote` (override with `make OTE_TEST_SUITES_DIR=/path …`).
+It's the base directory where `test-suites/<product>/…` runner assets are expected
+at runtime; scenario `command`/`workDir` reference it (e.g.
+`${OTE_TEST_SUITES_DIR}/acm/policy-set/opp-bundle/deployment`). In CI the image
+should copy `test-suites/` to that path. Only `make`-driven runs inherit the
+export — for a direct `./ote--interop` run, export it in your shell. *(No scenario
+references it yet; it's scaffolding.)*
 
 **go.mod note:** currently uses
 `replace github.com/openshift-eng/openshift-tests-extension => ../../../`
@@ -403,9 +432,10 @@ Relative to the `chaos-tests-extension` reference:
 - [ ] CI packaging: `images/Dockerfile.ci`, `ote_wrapper.sh`, gzip the binary,
       and `openshift/release` ci-operator + Prow config.
 - [ ] Add `OWNERS` / `LICENSE`.
-- [ ] (Optional) extend the adapter to pass arbitrary JSON tags (e.g. a
-      `subarea` dimension) beyond `product`/`category`.
+- [x] Custom JSON tags beyond `product`/`category` (the `tags` field) — **done**.
+- [ ] Wire `test-suites/<product>/…` into scenario `command`/`workDir` via
+      `OTE_TEST_SUITES_DIR`, and copy `test-suites/` into the CI image.
 
 ---
 
-*Snapshot generated from the live binary: 5 components, 47 tests, 33 suites.*
+*Snapshot generated from the live binary: 5 components, 47 tests, 34 suites.*
