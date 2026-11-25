@@ -1,0 +1,21 @@
+# Ignore build artifacts
+ote--interop
+*.o
+*.a
+*.so
+
+# Ignore git
+.git
+.gitignore
+
+# Ignore IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# Ignore CI artifacts
+.openshift-tests-extension
+
+# Ignore test results
+junit_*.xml

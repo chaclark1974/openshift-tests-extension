@@ -184,7 +184,8 @@ func runScenario(ctx context.Context, sc ScenarioSpec) *et.ExtensionTestResult {
 	}
 
 	cmd := exec.CommandContext(runCtx, sc.Command[0], sc.Command[1:]...)
-	cmd.Dir = sc.WorkDir
+	// Expand environment variables in workDir (e.g., ${OTE_TEST_SUITES_DIR})
+	cmd.Dir = os.ExpandEnv(sc.WorkDir)
 	cmd.Env = os.Environ()
 	for k, v := range sc.Env {
 		cmd.Env = append(cmd.Env, k+"="+v)
