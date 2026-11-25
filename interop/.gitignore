@@ -1,3 +1,5 @@
 .DS_Store
-# built OTE interop binary (build artifact)
+*.swp
+# built OTE interop binaries (build artifacts)
 test/ote/ote--interop
+test/ote/*-tests

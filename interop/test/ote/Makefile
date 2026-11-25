@@ -5,6 +5,11 @@ OTE_PKG := github.com/openshift-eng/openshift-tests-extension
 # The --component identifier for this extension (product:kind:name).
 COMPONENT := acm:layered-product:acm-tests
 
+# Runtime location of per-product test-suite assets. Exported so the binary
+# (and the subprocesses the adapter execs) inherit it. Override with
+# `make OTE_TEST_SUITES_DIR=/some/path ...`.
+export OTE_TEST_SUITES_DIR ?= $(HOME)/ote
+
 GIT_COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 BUILD_DATE := $(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
 GIT_TREE_STATE := $(shell if git diff --quiet 2>/dev/null; then echo clean; else echo dirty; fi)

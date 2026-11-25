@@ -13,7 +13,11 @@
         "bash",
         "-c",
         "echo 'acm upgrade harness ok'"
-      ]
+      ],
+      "tags": {
+        "tier": "0",
+        "owner": "interop-qe"
+      }
     },
     {
       "name": "[sig-acm-upgrade] ACM subscription targets an upgrade channel",
@@ -244,7 +248,10 @@
         "bash",
         "-c",
         "echo 'acm policy-set harness ok'"
-      ]
+      ],
+      "tags": {
+        "TS": "policy-set/opp-bundle/deployment"
+      }
     },
     {
       "name": "[sig-acm-policy-set] PolicySet applies grouped policies",
@@ -261,7 +268,10 @@
         "bash",
         "-c",
         "oc get crd policysets.policy.open-cluster-management.io"
-      ]
+      ],
+      "tags": {
+        "TS": "policy-set/opp-bundle/deployment"
+      }
     }
   ]
 }

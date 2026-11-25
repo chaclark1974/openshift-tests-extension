@@ -37,9 +37,9 @@ test code — products are *data*.
 ## Architecture
 
 ```
-test/interop/<product>/scenarios.json   (data: the test catalogs, embedded)
+scenarios/<product>/scenarios.json   (data: the test catalogs, embedded)
             │
-            │  //go:embed  (test/interop/embed.go  ->  ScenarioFS)
+            │  //go:embed  (scenarios/embed.go  ->  ScenarioFS)
             ▼
 pkg/adapter.BuildSpecsByProductFS(ScenarioFS)
             │  merges every scenarios.json, groups by "product"
@@ -78,22 +78,21 @@ interop/test/ote/                         # PROJECT ROOT (go.mod here)
 ├── pkg/
 │   └── adapter/
 │       └── adapter.go                    # generic exec adapter (ScenarioSpec -> OTE spec)
-└── test/
-    └── interop/
-        ├── embed.go                      # //go:embed acm acs cnv odf quay
-        ├── acm/scenarios.json
-        ├── quay/scenarios.json
-        ├── acs/scenarios.json
-        ├── odf/scenarios.json
-        └── cnv/scenarios.json
+└── scenarios/
+    ├── embed.go                      # //go:embed acm acs cnv odf quay
+    ├── acm/scenarios.json
+    ├── quay/scenarios.json
+    ├── acs/scenarios.json
+    ├── odf/scenarios.json
+    └── cnv/scenarios.json
 ```
 
 | Path | Purpose |
 |------|---------|
 | `cmd/ote--interop/main.go` | Declares each product's **component identity** and **suites**; wires specs from the adapter. The only per‑product Go left. |
 | `pkg/adapter/adapter.go` | Product‑agnostic: parse JSON → `ExtensionTestSpec`, exec subprocess, map results. |
-| `test/interop/<product>/scenarios.json` | That product's test catalog. |
-| `test/interop/embed.go` | Embeds the whole scenario tree into the binary. |
+| `scenarios/<product>/scenarios.json` | That product's test catalog. |
+| `scenarios/embed.go` | Embeds the whole scenario tree into the binary. |
 
 ---
 
@@ -119,7 +118,7 @@ component; the others require `--component`.
 
 ## Scenario JSON schema
 
-Each `test/interop/<product>/scenarios.json` is:
+Each `scenarios/<product>/scenarios.json` is:
 
 ```json
 { "scenarios": [ { /* ScenarioSpec */ }, ... ] }
@@ -348,7 +347,7 @@ run them:
 
 ### Add a test to an existing product
 
-1. Add a `ScenarioSpec` object to `test/interop/<product>/scenarios.json`.
+1. Add a `ScenarioSpec` object to `scenarios/<product>/scenarios.json`.
 2. `make build`.
 
 That's it — no Go changes if it reuses existing categories/labels/suites.
@@ -369,8 +368,8 @@ That's it — no Go changes if it reuses existing categories/labels/suites.
 
 ### Add a whole new product
 
-1. Create `test/interop/<new>/scenarios.json` (scenarios with `"product":"<new>"`).
-2. Add `<new>` to the `//go:embed` line in `test/interop/embed.go`.
+1. Create `scenarios/<new>/scenarios.json` (scenarios with `"product":"<new>"`).
+2. Add `<new>` to the `//go:embed` line in `scenarios/embed.go`.
 3. In `main.go`, register the extension and its suites:
    ```go
    newExt := e.NewExtension("<new>", "layered-product", "<new>-tests")
@@ -432,7 +431,7 @@ make build                                   # build ./ote--interop
 
 | Thing | Where |
 |-------|-------|
-| A product's tests | `test/interop/<product>/scenarios.json` |
+| A product's tests | `scenarios/<product>/scenarios.json` |
 | A product's component + suites | `cmd/ote--interop/main.go` |
 | The exec adapter | `pkg/adapter/adapter.go` |
-| Scenario embedding | `test/interop/embed.go` |
+| Scenario embedding | `scenarios/embed.go` |

@@ -19,7 +19,7 @@ architecture with a generic exec adapter (no Ginkgo).
 
 | Principle | Implementation |
 |-----------|----------------|
-| Tests are **data, not code** | Each product has `test/interop/<product>/scenarios.json`; a test = one JSON `ScenarioSpec`. |
+| Tests are **data, not code** | Each product has `scenarios/<product>/scenarios.json`; a test = one JSON `ScenarioSpec`. |
 | **One generic adapter** | `pkg/adapter` turns any `ScenarioSpec` into an OTE spec whose `Run` execs `command` as a subprocess. No per‑product branching. |
 | **One binary, many components** | `main.go` registers one OTE extension per product (`<product>:layered-product:<product>-tests`), each with its own suites. |
 | **No Ginkgo** | Specs are built from JSON; results come from subprocess exit codes. |
@@ -28,7 +28,7 @@ architecture with a generic exec adapter (no Ginkgo).
 Data flow:
 
 ```
-test/interop/<product>/scenarios.json
+scenarios/<product>/scenarios.json
         │  //go:embed  (embed.go -> ScenarioFS)
         ▼
 pkg/adapter.BuildSpecsByProductFS(ScenarioFS)     # walk + merge all JSON, group by "product"
@@ -57,14 +57,13 @@ interop/test/ote/                          # PROJECT ROOT (go.mod)
 ├── pkg/
 │   └── adapter/
 │       └── adapter.go                     # generic exec adapter
-└── test/
-    └── interop/
-        ├── embed.go                       # //go:embed acm acs cnv odf quay
-        ├── acm/scenarios.json             # 16 scenarios
-        ├── quay/scenarios.json            # 7
-        ├── acs/scenarios.json             # 8
-        ├── odf/scenarios.json             # 9
-        └── cnv/scenarios.json             # 7
+└── scenarios/
+    ├── embed.go                       # //go:embed acm acs cnv odf quay
+    ├── acm/scenarios.json             # 16 scenarios
+    ├── quay/scenarios.json            # 7
+    ├── acs/scenarios.json             # 8
+    ├── odf/scenarios.json             # 9
+    └── cnv/scenarios.json             # 7
 ```
 
 ---
@@ -77,11 +76,11 @@ component** (used when `--component` is omitted). All others require
 
 | Component identifier (`--component`) | Dir | Tests | Suites | Upstream reference (modeled, not pulled) |
 |--------------------------------------|-----|-------|--------|------------------------------------------|
-| `acm:layered-product:acm-tests` (default) | `test/interop/acm/` | 16 | 10 | ACM / `stolostron`; OPP upgrade commands script |
-| `quay:layered-product:quay-tests` | `test/interop/quay/` | 7 | 5 | `quay/quay` web Playwright e2e |
-| `acs:layered-product:acs-tests` | `test/interop/acs/` | 8 | 6 | `stackrox/stackrox` qa-tests-backend |
-| `odf:layered-product:odf-tests` | `test/interop/odf/` | 9 | 6 | `red-hat-storage/ocs-ci` (pytest) |
-| `cnv:layered-product:cnv-tests` | `test/interop/cnv/` | 7 | 6 | KubeVirt / OpenShift Virtualization |
+| `acm:layered-product:acm-tests` (default) | `scenarios/acm/` | 16 | 10 | ACM / `stolostron`; OPP upgrade commands script |
+| `quay:layered-product:quay-tests` | `scenarios/quay/` | 7 | 5 | `quay/quay` web Playwright e2e |
+| `acs:layered-product:acs-tests` | `scenarios/acs/` | 8 | 6 | `stackrox/stackrox` qa-tests-backend |
+| `odf:layered-product:odf-tests` | `scenarios/odf/` | 9 | 6 | `red-hat-storage/ocs-ci` (pytest) |
+| `cnv:layered-product:cnv-tests` | `scenarios/cnv/` | 7 | 6 | KubeVirt / OpenShift Virtualization |
 
 `list components` prints these five.
 
@@ -372,10 +371,10 @@ done
 
 | Task | Steps |
 |------|-------|
-| Add a test | Add a `ScenarioSpec` to `test/interop/<product>/scenarios.json`; `make build`. |
+| Add a test | Add a `ScenarioSpec` to `scenarios/<product>/scenarios.json`; `make build`. |
 | Add a label (e.g. `OPP`) | Add the string to the scenarios' `labels`; optionally add a `*/opp` suite in `main.go`; `make build`. |
 | Add a functional area | New `category` value in JSON + a suite in `main.go` with `tags["category"]=="<new>"`; `make build`. |
-| Add a product | New `test/interop/<new>/scenarios.json`; add `<new>` to `//go:embed` in `embed.go`; add the extension + suites in `main.go`; `make build`. |
+| Add a product | New `scenarios/<new>/scenarios.json`; add `<new>` to `//go:embed` in `embed.go`; add the extension + suites in `main.go`; `make build`. |
 | Wire a real runner | Replace the scenario `command` with the real invocation (Playwright/pytest/roxctl/oc/script); ensure its tooling is on the test‑step image. |
 
 ---

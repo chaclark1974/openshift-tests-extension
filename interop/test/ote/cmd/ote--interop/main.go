@@ -10,7 +10,7 @@ import (
 	e "github.com/openshift-eng/openshift-tests-extension/pkg/extension"
 
 	"github.com/stolostron/cluster-lifecycle-e2e/openshift-tests-ext/pkg/adapter"
-	scenarios "github.com/stolostron/cluster-lifecycle-e2e/openshift-tests-ext/test/interop"
+	"github.com/stolostron/cluster-lifecycle-e2e/openshift-tests-ext/scenarios"
 )
 
 func main() {
@@ -41,6 +41,8 @@ func main() {
 		Parents: []string{"openshift/conformance/parallel"}, Qualifiers: []string{`tags["category"] == "acm-lifecycle"`}})
 	acmExt.AddSuite(e.Suite{Name: "acm/policy-set", Description: "ACM PolicySet tests",
 		Parents: []string{"openshift/conformance/parallel"}, Qualifiers: []string{`tags["category"] == "acm-policy-set"`}})
+	acmExt.AddSuite(e.Suite{Name: "acm/policy-set/opp-bundle/deployment", Description: "ACM PolicySet OPP-bundle deployment tests",
+		Parents: []string{"openshift/conformance/parallel"}, Qualifiers: []string{`"TS" in tags && tags["TS"] == "policy-set/opp-bundle/deployment"`}})
 	acmExt.AddSuite(e.Suite{Name: "acm/smoke", Description: "ACM smoke tests (fast, across all areas)",
 		Parents: []string{"openshift/conformance/parallel"}, Qualifiers: []string{`labels.exists(l, l=="SMOKE")`}})
 	acmExt.AddSuite(e.Suite{Name: "acm/policy-smoke", Description: "ACM policy-area smoke tests",

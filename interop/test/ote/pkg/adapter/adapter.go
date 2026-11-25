@@ -29,6 +29,11 @@ type ScenarioSpec struct {
 	Category string   `json:"category,omitempty"` // -> tags["category"] (functional area)
 	Labels   []string `json:"labels,omitempty"`   // scenario/depth labels, e.g. OPP, ACM-VIRT, SMOKE
 
+	// Tags are arbitrary extra key/value tags merged into the spec's tags
+	// (e.g. {"tier":"0","owner":"interop-qe"}). "product" and "category" are
+	// reserved and always win over anything set here.
+	Tags map[string]string `json:"tags,omitempty"`
+
 	Lifecycle string `json:"lifecycle,omitempty"` // "informing" | "blocking" (default blocking)
 	Timeout   string `json:"timeout,omitempty"`   // Go duration, e.g. "30m"
 	Include   string `json:"include,omitempty"`   // CEL env gate, e.g. platform=="aws"
@@ -112,7 +117,11 @@ func buildSpecs(scenarios []ScenarioSpec) (map[string]et.ExtensionTestSpecs, err
 }
 
 func toSpec(sc ScenarioSpec) (*et.ExtensionTestSpec, error) {
-	tags := map[string]string{"product": sc.Product}
+	tags := map[string]string{}
+	for k, v := range sc.Tags { // arbitrary extra tags from JSON
+		tags[k] = v
+	}
+	tags["product"] = sc.Product // reserved: always authoritative
 	if sc.Category != "" {
 		tags["category"] = sc.Category
 	}
